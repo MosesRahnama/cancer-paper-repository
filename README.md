@@ -203,18 +203,10 @@ CI workflow is included at `.github/workflows/ci.yml`.
 
 ---
 
-## Foundational References
-
-1. Rahnama, M. (2026). *Cancer as Boundary Logic Failure*. [This paper]
-2. Rahnama, M. (2025). *Strong Normalization for the Safe Fragment of a Self-Referential Operator Kernel*. arXiv https://arxiv.org/abs/2512.00081
-3. Rahnama, M. (2026). *Thermodynamic Constraints on Measurement Events: A Boundary Framework for Classical Information*. Zenodo. https://doi.org/10.5281/zenodo.18445561
-
----
-
 ## Limitations
 
-- This is NOT a predictive cancer model
-- Does NOT capture genetics, metabolism, angiogenesis, immune editing, clonal heterogeneity, or spatial constraints
+- This is not a predictive cancer model
+- Does not capture genetics, metabolism, angiogenesis, immune editing, clonal heterogeneity, or spatial constraints
 - The coherence metric kappa is not calibrated against clinical data
 - Simulation parameters are illustrative, not empirically derived
 - Demonstrates logical failure modes, not molecular causation
