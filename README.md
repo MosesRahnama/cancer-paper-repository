@@ -205,7 +205,7 @@ CI workflow is included at `.github/workflows/ci.yml`.
 
 1. Rahnama, M. (2026). *Cancer as Boundary Logic Failure*. [This paper]
 2. Rahnama, M. (2025). *Strong Normalization for the Safe Fragment of a Self-Referential Operator Kernel*. arXiv:2512.00081
-3. Rahnama, M. (2025). *The Observation Principle: The Boundary that Sees Itself*. Zenodo. https://zenodo.org/records/17861545
+3. Rahnama, M. (2025). *The Observation Principle, Laws of Entanglement, Laws of Information*. Zenodo. https://zenodo.org/records/17861545
 4. Rahnama, M. (2026). *Thermodynamic Constraints on Measurement Events: A Boundary Framework for Classical Information*. Zenodo. https://doi.org/10.5281/zenodo.18445561
 
 ---
