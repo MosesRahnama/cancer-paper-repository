@@ -8,7 +8,7 @@ authors:
     email: moses@minaanalytics.com
 version: 0.1.0
 date-released: 2026-02-08
-repository-code: "https://github.com/REPLACE_WITH_REPO_URL"
+repository-code: "https://github.com/MosesRahnama/cancer-paper-repository"
 preferred-citation:
   type: article
   authors:
