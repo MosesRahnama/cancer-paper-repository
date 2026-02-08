@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: "Cancer as Boundary Logic Failure: Companion Simulation Repository"
-message: "If you use this repository, please cite the manuscript and this software record."
+message: "If you use this repository, please cite the manuscript and this software record (citation is required by the repository license)."
 type: software
 authors:
   - family-names: Rahnama

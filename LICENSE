@@ -1,9 +1,48 @@
+Cancer Paper Repository License
+Version 1.0 (2026-02-08)
+
 Copyright (c) 2026 Moses Rahnama (Mina Analytics)
-All rights reserved.
 
-This repository is published for research transparency and reproducibility.
-No permission is granted to copy, distribute, modify, sublicense, or use this
-software beyond applicable fair-use and citation norms without prior written
-permission from the copyright holder.
+1) Grant of Permission (Non-Commercial)
+Permission is granted to use, copy, modify, and redistribute this software and
+associated documentation for non-commercial purposes, including research,
+teaching, personal study, and internal evaluation.
 
-For licensing requests, contact: moses@minaanalytics.com
+2) Attribution and Citation Requirement
+If you use this repository in research, reports, publications, presentations,
+or derived academic works, you must:
+- retain this LICENSE file in source distributions, and
+- provide appropriate citation to the manuscript and repository metadata
+  (see CITATION.cff).
+
+3) Commercial Use Requires a Separate License
+Commercial use is not permitted under this license.
+Commercial use includes, without limitation:
+- sale, sublicensing, or paid distribution of this software or derivatives;
+- use in paid products/services (including SaaS/API offerings);
+- use in commercial therapeutic, diagnostic, or clinical decision workflows;
+- embedding in for-profit proprietary systems.
+
+Any commercial use requires a separate written commercial license from the
+copyright holder, including compensation terms.
+
+4) No Trademark or Patent License
+This license does not grant trademark rights or patent rights.
+
+5) Disclaimer of Warranty
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, AND NON-INFRINGEMENT.
+
+6) Limitation of Liability
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR
+OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+OR OTHER DEALINGS IN THE SOFTWARE.
+
+7) Termination
+Any rights granted under this license terminate automatically upon breach of
+its terms.
+
+8) Contact for Commercial Licensing
+moses@minaanalytics.com

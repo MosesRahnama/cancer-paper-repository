@@ -31,3 +31,5 @@ Include:
 1. What changed.
 2. Why it changed.
 3. Validation steps and exact commands run.
+
+Maintainers: release procedure is documented in `.github/maintainers/RELEASE_CHECKLIST.md`.

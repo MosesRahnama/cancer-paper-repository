@@ -48,12 +48,16 @@ cancer-paper-repository/
   requirements.txt                   # Python dependencies
   requirements-dev.txt               # Dev/test dependency set
   CONTRIBUTING.md                    # Contribution protocol
-  RELEASE_CHECKLIST.md               # Pre-release verification steps
   CITATION.cff                       # Citation metadata
   LICENSE                            # Rights and usage terms
   .gitignore                         # Git ignore rules
   run_simulation.py                  # Simple demo script
   run_phase2_extractions.py          # Phase-2 extracted operators + multi-seed sweep
+
+  .github/
+    workflows/ci.yml                 # CI checks
+    maintainers/
+      RELEASE_CHECKLIST.md           # Maintainer-only pre-release checklist
 
   src/
     core/
@@ -202,7 +206,7 @@ CI workflow is included at `.github/workflows/ci.yml`.
 ## Foundational References
 
 1. Rahnama, M. (2026). *Cancer as Boundary Logic Failure*. [This paper]
-2. Rahnama, M. (2025). *Strong Normalization for the Safe Fragment of a Self-Referential Operator Kernel*. arXiv:2512.00081
+2. Rahnama, M. (2025). *Strong Normalization for the Safe Fragment of a Self-Referential Operator Kernel*. arXiv https://arxiv.org/abs/2512.00081
 3. Rahnama, M. (2025). *The Observation Principle, Laws of Entanglement, Laws of Information*. Zenodo. https://zenodo.org/records/17861545
 4. Rahnama, M. (2026). *Thermodynamic Constraints on Measurement Events: A Boundary Framework for Classical Information*. Zenodo. https://doi.org/10.5281/zenodo.18445561
 
@@ -221,4 +225,10 @@ CI workflow is included at `.github/workflows/ci.yml`.
 
 ## License
 
-All rights reserved by the author. See `LICENSE`.
+This repository uses a custom non-commercial research license.
+
+- Non-commercial use (research, teaching, internal evaluation) is permitted.
+- Attribution and citation are required (see `CITATION.cff`).
+- Commercial/clinical product use requires a separate paid commercial license.
+
+See `LICENSE` for full terms and contact details.
