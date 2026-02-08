@@ -17,6 +17,7 @@ The framework allows you to:
 - Compare therapy outcomes
 
 **This is a theoretical model, not a clinical tool.** It demonstrates logical failure modes, not molecular causation.
+Legacy extraction artifacts are intentionally excluded from this published repository.
 
 ---
 
@@ -53,9 +54,6 @@ cancer-paper-repository/
   .gitignore                         # Git ignore rules
   run_simulation.py                  # Simple demo script
   run_phase2_extractions.py          # Phase-2 extracted operators + multi-seed sweep
-
-  legacy/
-    legacy_extracted_simulation.py   # Moved monolithic extracted simulation script
 
   src/
     core/
