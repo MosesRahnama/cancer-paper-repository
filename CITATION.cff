@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: "Cancer as Boundary Logic Failure: Companion Simulation Repository"
+message: "If you use this repository, please cite the manuscript and this software record."
+type: software
+authors:
+  - family-names: Rahnama
+    given-names: Moses
+    email: moses@minaanalytics.com
+version: 0.1.0
+date-released: 2026-02-08
+repository-code: "https://github.com/REPLACE_WITH_REPO_URL"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Rahnama
+      given-names: Moses
+  title: "Cancer as Boundary Logic Failure: A Computational and Information-Theoretic Framework for the Internal Self-Referential Malignancy"
+  year: 2026

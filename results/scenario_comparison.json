@@ -1,0 +1,42 @@
+[
+  {
+    "therapy": "No Therapy (Control)",
+    "treated_cells": 0,
+    "pre_therapy_kappa": 0.41778353548029346,
+    "pre_therapy_cancer": 376,
+    "post_therapy_kappa": 0.41778353548029346,
+    "post_therapy_cancer": 376
+  },
+  {
+    "therapy": "Forced Distinction",
+    "treated_cells": 376,
+    "pre_therapy_kappa": 0.41778353548029346,
+    "pre_therapy_cancer": 376,
+    "post_therapy_kappa": 0.23061193040533018,
+    "post_therapy_cancer": 376
+  },
+  {
+    "therapy": "Differentiation Therapy (ATRA)",
+    "treated_cells": 376,
+    "pre_therapy_kappa": 0.41778353548029346,
+    "pre_therapy_cancer": 376,
+    "post_therapy_kappa": 0.4414935646304662,
+    "post_therapy_cancer": 0
+  },
+  {
+    "therapy": "Checkpoint Inhibitor (anti-PD-1)",
+    "treated_cells": 376,
+    "pre_therapy_kappa": 0.41778353548029346,
+    "pre_therapy_cancer": 376,
+    "post_therapy_kappa": 0.23215687802374493,
+    "post_therapy_cancer": 376
+  },
+  {
+    "therapy": "Bioelectric Reprogramming (Levin)",
+    "treated_cells": 376,
+    "pre_therapy_kappa": 0.41778353548029346,
+    "pre_therapy_cancer": 376,
+    "post_therapy_kappa": 0.19857099559598207,
+    "post_therapy_cancer": 376
+  }
+]

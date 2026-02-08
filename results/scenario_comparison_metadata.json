@@ -1,0 +1,20 @@
+{
+  "parameter_profile": {
+    "name": "calibrated-monthly-oed",
+    "step_unit": "1 step = 1 month",
+    "seed": 42,
+    "n_cells": 100,
+    "energy_budget": 10000.0,
+    "pre_steps": 200,
+    "post_steps": 100,
+    "p_mutation": 0.002,
+    "p_progression": 0.009201699575916766,
+    "p_healthy_division": 0.01,
+    "source_refs": [
+      "10.1155/2015/854636",
+      "10.1101/cshperspect.a026542",
+      "10.1126/science.aab4082"
+    ],
+    "note": "Progression anchored to pooled oral epithelial dysplasia malignant transformation rate (~10.5% annual) converted to monthly hazard."
+  }
+}
