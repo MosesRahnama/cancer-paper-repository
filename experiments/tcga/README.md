@@ -7,12 +7,12 @@ Complete reproducible pipeline for extracting and analyzing TCGA cancer genomics
 This analysis validates that cancer progression involves systematic failures in cellular boundary mechanisms—specifically temporal coherence (circadian regulation), immune distinction (MHC-I presentation), and communication (gap junctions). The key finding is that boundary failure is not monolithic: tumors exhibit distinct failure modes with different clinical outcomes.
 
 **Key Results:**
-- **n=3,611 tumor samples** across 6 cancer types (SKCM, LUAD, BRCA, COAD, HNSC, LUSC)
-- **100% replication**: Circadian coherence loss correlates with PD-L1 expression across all 6 cancer types
+- **n=3,611 tumor samples** across 6 cancer types (plus 309 normal samples; 3,920 total rows)
+- **100% replication**: Circadian CV is negatively associated with PD-L1 across all 6 cancer types (all FDR q < 0.05)
 - **Two distinct boundary-failure modes identified:**
   - **Active Masking**: High PD-L1 + locked circadian clock (high BMAL1, low PER1) → better survival
   - **Decoherence**: Low PD-L1 + low MHC-I → worse survival, genuine loss of coherence
-- **Survival advantage**: Active Masking patients survive significantly longer than Decoherence patients (p<0.001 in SKCM, p=0.024 in LUAD)
+- **Survival association (patient-level deduplicated)**: Active Masking vs Decoherence is significant in SKCM (p=0.0011, q=0.0066) and directionally consistent but nominal in LUAD (p=0.049, q=0.147)
 
 ## Prerequisites
 
@@ -76,12 +76,12 @@ All data is extracted from **ISB-CGC BigQuery public datasets** hosted at `isb-c
 | Project ID  | Cancer Type                      | Tumor Samples | Normal Samples |
 |-------------|----------------------------------|---------------|----------------|
 | TCGA-SKCM   | Skin Cutaneous Melanoma          | 472           | 1              |
-| TCGA-LUAD   | Lung Adenocarcinoma              | 531           | 59             |
-| TCGA-BRCA   | Breast Invasive Carcinoma        | 1107          | 113            |
-| TCGA-COAD   | Colon Adenocarcinoma             | 290           | 41             |
+| TCGA-LUAD   | Lung Adenocarcinoma              | 530           | 59             |
+| TCGA-BRCA   | Breast Invasive Carcinoma        | 1113          | 113            |
+| TCGA-COAD   | Colon Adenocarcinoma             | 473           | 41             |
 | TCGA-HNSC   | Head and Neck Squamous Cell      | 522           | 44             |
 | TCGA-LUSC   | Lung Squamous Cell Carcinoma     | 503           | 51             |
-| **Total**   |                                  | **3425**      | **309**        |
+| **Total**   |                                  | **3611**      | **309**        |
 
 ## Pipeline Execution
 
@@ -93,12 +93,16 @@ cd experiments/tcga
 # 1. Extract data from BigQuery (~5 minutes)
 python tcga_extract_expanded.py
 
-# 2. Run all analyses (each ~1-2 minutes)
+# 2. Run all core analyses (each ~1-2 minutes)
 python tcga_multicancer.py         # Multi-cancer correlation validation
 python tcga_tumor_normal.py        # Tumor vs normal comparison
 python tcga_immune_subtype.py      # Active Masking vs Decoherence classification
 python tcga_survival.py            # Kaplan-Meier survival analysis
 python tcga_stage_analysis.py      # Stage-stratified analysis + FDR correction
+
+# 3. OPTIONAL: Run robustness checks with covariate control (for peer review)
+# Requires optional purity/immune covariate file (see script #8 documentation)
+python robustness_check.py         # Multivariable Cox models with stage/purity controls
 
 # All results saved to current directory + figures/ subdirectory
 ```
@@ -174,7 +178,7 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 2. Applies Benjamini-Hochberg FDR correction across all tests
 3. Generates heatmap showing effect sizes (rho) and significance
 
-**Key finding**: Circadian CV vs PD-L1 correlation replicates in **all 6 cancer types** (100% replication rate).
+**Key finding**: Circadian CV vs PD-L1 shows a consistent **negative** correlation in all 6 cancer types (100% replication; all FDR q < 0.05).
 
 ---
 
@@ -231,18 +235,19 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
   - `survival_boundary_failure.png` (KM curves: Active Masking vs Decoherence vs Mixed)
 
 **What it does:**
-1. Joins expression data with clinical outcomes (vital_status, days_to_death, days_to_last_follow_up)
-2. Computes survival time: days_to_death if dead, else days_to_last_follow_up (censored)
-3. Stratifies patients by:
+1. Filters to tumor samples and retains one tumor sample per case (Primary > Recurrent > Metastatic when duplicates exist)
+2. Joins expression data with clinical outcomes (vital_status, days_to_death, days_to_last_follow_up)
+3. Computes survival time: days_to_death if dead, else days_to_last_follow_up (censored)
+4. Stratifies patients by:
    - Circadian CV quartiles (Q1=most coherent, Q4=least coherent)
    - Boundary-failure mode (Active Masking vs Decoherence)
-4. Estimates KM curves using `scipy.stats.ecdf` with `CensoredData.right_censored()`
-5. Tests group differences using `scipy.stats.logrank()`
+5. Estimates KM curves using `scipy.stats.ecdf` with `CensoredData.right_censored()`
+6. Tests group differences using `scipy.stats.logrank()`
 
 **Key finding**:
-- Active Masking patients survive **significantly longer** than Decoherence
-- SKCM: log-rank p = 0.0008
-- LUAD: log-rank p = 0.024
+- After enforcing one tumor sample per case, Active Masking vs Decoherence is:
+- SKCM: log-rank p = 0.0011, BH q = 0.0066 (significant)
+- LUAD: log-rank p = 0.049, BH q = 0.147 (nominal only)
 
 **Statistical note**: Uses `CensoredData.right_censored(all_times, is_censored_mask)` where `is_censored_mask[i] = True` if patient i is censored (alive or lost to follow-up).
 
@@ -264,7 +269,72 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 3. **Collects ALL p-values** from multicancer, tumor-normal, immune subtype, and survival analyses
 4. Applies comprehensive **Benjamini-Hochberg FDR correction** to the full set of tests
 
-**Key finding**: Stage correlation weak (only significant in LUAD and BRCA) → boundary failure is early event, not late-stage phenomenon.
+**Key finding**: Circadian CV has no FDR-significant association with stage in any cohort; boundary mode appears early and is maintained through progression. (Some non-circadian markers show modest stage associations.)
+
+---
+
+#### 8. **robustness_check.py** (OPTIONAL)
+**Type**: Multivariable survival analysis with covariate control
+**Runtime**: ~3-5 minutes
+**Inputs**:
+- `tcga_expanded_tpm.csv` (required)
+- `tcga_clinical.csv` (required)
+- `tcga_purity_immune_covariates.csv` (OPTIONAL - see below)
+
+**Outputs**:
+- `robustness_cox_results.csv` (multivariable Cox model results)
+- `robustness_ph_diagnostics.csv` (proportional hazards diagnostics)
+- `robustness_interaction_results.csv` (PD-L1 × clock interaction tests)
+- **Figures**:
+  - `robustness_forest_plot.png` (hazard ratios with confidence intervals)
+  - `robustness_ph_diagnostics.png` (Schoenfeld residual-like diagnostics)
+
+**What it does:**
+1. Runs multivariable Cox proportional hazards models for Active Masking vs Decoherence survival
+2. Controls for tumor stage (categorical: I/II/III/IV/missing)
+3. Optionally controls for tumor purity and immune infiltration if covariate file is provided
+4. Tests proportional hazards assumption via covariate × log(time) interaction screens
+5. Tests continuous PD-L1 × circadian clock interaction models
+6. Applies Benjamini-Hochberg FDR correction across all robustness tests
+
+**Optional Purity/Immune Covariate File:**
+
+This script can optionally incorporate tumor purity and immune infiltration estimates as covariates. To use this feature, create a CSV file with the following structure:
+
+**File name** (one of these, checked in order):
+- `tcga_purity_immune_covariates.csv` (recommended)
+- `tcga_purity_covariates.csv`
+- `tcga_purity.csv`
+
+**Required columns:**
+- `case_barcode` or `bcr_patient_barcode` or `submitter_id` (patient identifier)
+
+**Optional columns** (any recognized variant):
+- **Tumor purity**: `purity`, `tumor_purity`, `cpe`, `estimate_purity`, `absolute_purity`, `consensus_purity`
+- **Lymphoid infiltration**: `lymphocyte_infiltration`, `lymphocyte_score`, `immune_lymphoid`
+- **Myeloid infiltration**: `myeloid_infiltration`, `myeloid_score`, `immune_myeloid`
+- **Project ID**: `project_short_name`, `project_id`, `cohort`
+
+**Where to get these estimates:**
+- **ESTIMATE algorithm**: Yoshihara et al. 2013 - estimates tumor purity and immune/stromal scores from expression data
+- **ABSOLUTE**: Carter et al. 2012 - absolute tumor purity from copy number and allelic fractions
+- **xCell/CIBERSORT**: Cell-type deconvolution tools for immune infiltration estimates
+- **Pre-computed TCGA estimates**: Available from Thorsson et al. 2018 Immunity paper (PanCancer immune landscape)
+
+**Note**: If no covariate file is found, the script runs without purity/immune controls (stage-only adjustment). This is **acceptable** because:
+1. Our primary results (circadian CV vs PD-L1 correlation, Active Masking subtype definition) do not depend on survival modeling
+2. Stage-adjusted Cox models are already robust to major confounding
+3. Purity/immune controls are a sensitivity check, not a primary requirement
+
+**When to run this script:**
+- For manuscript peer review requiring multivariable survival models
+- To test robustness of survival findings to stage, purity, and immune confounders
+- To explore continuous PD-L1 × clock interactions beyond categorical Active Masking/Decoherence subtypes
+
+**When NOT to run this script:**
+- For initial exploratory analysis (use `tcga_survival.py` instead - faster, simpler)
+- If you don't have covariate data and reviewers haven't requested it
+- For paper figures (main figures come from `tcga_survival.py`)
 
 ---
 
@@ -292,13 +362,17 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 | `tcga_clinical.csv` | 3,646 | 12 | Clinical data with survival outcomes |
 | `tcga_expression_tpm.csv` | 1,062 | 25 | *Legacy*: Original 2-cancer extraction (SKCM+LUAD only) |
 | `tcga_expression_counts.csv` | 1,062 | 25 | *Legacy*: Original 2-cancer extraction (count data) |
-| `hypothesis1_correlations.csv` | 18 | 6 | Multi-cancer correlation summary (3 tests × 6 cancer types) |
-| `tcga_multicancer_correlations.csv` | 18 | 5 | Detailed multi-cancer correlation results |
-| `immune_subtype_comparison.csv` | 6 | 4 | Kruskal-Wallis results for boundary-failure subtypes |
-| `tumor_normal_comparison.csv` | 15 | 5 | Tumor vs normal statistical test results |
-| `stage_analysis_results.csv` | 6 | 4 | Stage correlation results per cancer type |
-| `survival_logrank_results.csv` | 12 | 4 | Log-rank test results for survival stratification |
-| `master_fdr_results.csv` | 102 | 6 | Comprehensive FDR-corrected p-values for all tests |
+| `hypothesis1_correlations.csv` | 34 | 6 | Multi-cancer summary with FDR-corrected key hypotheses |
+| `tcga_multicancer_correlations.csv` | 102 | 8 | Detailed multi-cancer correlation results |
+| `immune_subtype_comparison.csv` | 6 | 18 | Subtype CV contrasts (Kruskal + pairwise Mann-Whitney with FDR) |
+| `tumor_normal_comparison.csv` | 35 | 14 | Tumor-normal comparisons (paired/unpaired tests with FDR) |
+| `stage_analysis_results.csv` | 48 | 6 | Stage-trend and stage-group tests across markers/cancers |
+| `survival_logrank_results.csv` | 12 | 10 | Log-rank tests with within-family and global FDR columns |
+| `master_fdr_results.csv` | 244 | 9 | Comprehensive FDR-corrected p-values across all analyses |
+| `tcga_purity_immune_covariates.csv` | varies | 3-6 | **OPTIONAL**: Tumor purity and immune infiltration estimates for robustness checks (user-provided; see script #8 documentation for sources) |
+| `robustness_cox_results.csv` | varies | 12+ | Multivariable Cox model results (generated by `robustness_check.py`) |
+| `robustness_ph_diagnostics.csv` | varies | 8+ | Proportional hazards diagnostics (generated by `robustness_check.py`) |
+| `robustness_interaction_results.csv` | varies | 10+ | PD-L1 × clock interaction tests (generated by `robustness_check.py`) |
 
 ### Figures (PNG, 300 DPI)
 
@@ -319,7 +393,7 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 ## Key Statistical Methods
 
 1. **Spearman rank correlation** (`scipy.stats.spearmanr`): Non-parametric correlation for non-normal distributions
-2. **Benjamini-Hochberg FDR correction** (`scipy.stats.false_discovery_control`): Controls false discovery rate across 102 multiple tests
+2. **Benjamini-Hochberg FDR correction** (`scipy.stats.false_discovery_control`): Controls false discovery rate across 244 multiple tests
 3. **Wilcoxon signed-rank test** (`scipy.stats.wilcoxon`): Paired comparison for matched tumor-normal samples
 4. **Mann-Whitney U test** (`scipy.stats.mannwhitneyu`): Unpaired comparison for independent groups
 5. **Kruskal-Wallis H test** (`scipy.stats.kruskal`): Multi-group comparison (Active Masking vs Decoherence vs Mixed)
