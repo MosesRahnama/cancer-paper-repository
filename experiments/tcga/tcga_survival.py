@@ -19,7 +19,7 @@ matplotlib.use("Agg")
 
 import numpy as np
 import pandas as pd
-from scipy.stats import CensoredData, ecdf, logrank
+from scipy.stats import CensoredData, ecdf, logrank, false_discovery_control
 
 from tcga_config import (
     CIRCADIAN, ALL_PROJECTS, PROJECT_LABELS,
@@ -38,6 +38,36 @@ MIN_PATIENTS = 50
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
+def deduplicate_one_tumor_sample_per_case(tumors):
+    """
+    Keep one tumor sample per (project_short_name, case_barcode).
+
+    Priority:
+      1) Primary Tumor
+      2) Recurrent Tumor
+      3) Metastatic / Additional Metastatic
+      4) Any other tumor-like label
+
+    This avoids violating patient-level independence in survival analysis.
+    """
+    pr = np.full(len(tumors), 4, dtype=int)
+    s = tumors["sample_type_name"].fillna("").astype(str)
+    pr[s.str.contains("Primary Tumor", case=False)] = 1
+    pr[s.str.contains("Recurrent Tumor", case=False)] = 2
+    pr[s.str.contains("Metastatic", case=False)] = 3
+
+    out = tumors.copy()
+    out["_sample_priority"] = pr
+    out = out.sort_values(
+        ["project_short_name", "case_barcode", "_sample_priority", "sample_barcode"]
+    )
+    out = out.drop_duplicates(
+        subset=["project_short_name", "case_barcode"], keep="first"
+    )
+    out = out.drop(columns=["_sample_priority"])
+    return out
+
+
 def build_censored(times, events):
     """Return a CensoredData object from arrays of times and boolean events.
 
@@ -77,7 +107,11 @@ def main():
     tumors = expr[
         expr["sample_type_name"].str.contains("Tumor|Metastatic", case=False, na=False)
     ].copy()
-    print(f"Tumor samples  : {len(tumors)}")
+    print(f"Tumor rows (pre-dedup): {len(tumors)}")
+    print(f"Unique cases (pre-dedup): {tumors['case_barcode'].nunique()}")
+    tumors = deduplicate_one_tumor_sample_per_case(tumors)
+    print(f"Tumor rows (deduped): {len(tumors)}")
+    print(f"Unique cases (deduped): {tumors['case_barcode'].nunique()}")
 
     # merge (one clinical row per patient, many expression rows possible)
     merged = tumors.merge(clin, on="case_barcode", how="inner", suffixes=("", "_clin"))
@@ -260,6 +294,26 @@ def main():
 
     # ---- save results CSV ----
     res_df = pd.DataFrame(surv_results)
+    if not res_df.empty:
+        # BH-FDR within each test family (Q1 vs Q4, AM vs DC) across 6 cohorts.
+        res_df["q_value_test_family"] = np.nan
+        for _, g in res_df.groupby("test", dropna=False):
+            pvals = g["p_value"].astype(float)
+            valid = pvals.notna().values
+            if valid.sum() > 0:
+                qvals = np.full(len(g), np.nan, dtype=float)
+                qvals[valid] = false_discovery_control(pvals[valid], method="bh")
+                res_df.loc[g.index, "q_value_test_family"] = qvals
+        # BH-FDR across all 12 survival tests
+        p_all = res_df["p_value"].astype(float)
+        valid_all = p_all.notna().values
+        q_all = np.full(len(res_df), np.nan, dtype=float)
+        if valid_all.sum() > 0:
+            q_all[valid_all] = false_discovery_control(p_all[valid_all], method="bh")
+        res_df["q_value_all_survival_tests"] = q_all
+        res_df["significant_fdr05_family"] = res_df["q_value_test_family"] < 0.05
+        res_df["significant_fdr05_all"] = res_df["q_value_all_survival_tests"] < 0.05
+
     csv_path = os.path.join(DATA_DIR, "survival_logrank_results.csv")
     res_df.to_csv(csv_path, index=False)
     print(f"  Saved: {csv_path}")

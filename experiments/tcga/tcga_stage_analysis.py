@@ -241,84 +241,121 @@ def main():
 
     all_pvals = []
 
-    # 1) Hypothesis 1 correlations
-    h1_path = os.path.join(DATA_DIR, "hypothesis1_correlations.csv")
-    if os.path.exists(h1_path):
-        h1 = pd.read_csv(h1_path)
-        for _, row in h1.iterrows():
-            all_pvals.append({
-                "source": "hypothesis1_correlations",
-                "cancer_type": row.get("project", ""),
-                "test_description": row.get("comparison", ""),
-                "test_type": "spearman",
-                "statistic": row.get("rho", np.nan),
-                "p_value": row.get("p_value", np.nan),
-                "n": row.get("n", np.nan),
-            })
-        print(f"  Loaded {len(h1)} p-values from hypothesis1_correlations.csv")
+    def append_entry(
+        source, cancer_type, test_description, test_type, statistic, p_value, n
+    ):
+        all_pvals.append({
+            "source": source,
+            "cancer_type": cancer_type,
+            "test_description": test_description,
+            "test_type": test_type,
+            "statistic": statistic,
+            "p_value": p_value,
+            "n": n,
+        })
 
-    # 2) Multi-cancer results
-    mc_path = os.path.join(DATA_DIR, "multi_cancer_results.csv")
+    # 1) Multi-cancer correlation results (preferred expanded file)
+    mc_path = os.path.join(DATA_DIR, "tcga_multicancer_correlations.csv")
+    loaded_multicancer = False
     if os.path.exists(mc_path):
         mc = pd.read_csv(mc_path)
         for _, row in mc.iterrows():
-            all_pvals.append({
-                "source": "multi_cancer",
-                "cancer_type": row.get("cancer_type", row.get("project", "")),
-                "test_description": row.get("comparison", row.get("test", "")),
-                "test_type": row.get("test", ""),
-                "statistic": row.get("statistic", row.get("rho", np.nan)),
-                "p_value": row.get("p_value", np.nan),
-                "n": row.get("n", np.nan),
-            })
-        print(f"  Loaded {len(mc)} p-values from multi_cancer_results.csv")
+            append_entry(
+                source="multi_cancer",
+                cancer_type=row.get("project", ""),
+                test_description=row.get("comparison", ""),
+                test_type="spearman",
+                statistic=row.get("rho", np.nan),
+                p_value=row.get("p_value", np.nan),
+                n=row.get("n", np.nan),
+            )
+        loaded_multicancer = True
+        print(f"  Loaded {len(mc)} p-values from tcga_multicancer_correlations.csv")
 
-    # 3) Tumor-normal results
-    tn_path = os.path.join(DATA_DIR, "tumor_normal_results.csv")
+    # 2) Legacy hypothesis-1 file only if expanded multi-cancer file is absent
+    h1_path = os.path.join(DATA_DIR, "hypothesis1_correlations.csv")
+    if (not loaded_multicancer) and os.path.exists(h1_path):
+        h1 = pd.read_csv(h1_path)
+        for _, row in h1.iterrows():
+            append_entry(
+                source="hypothesis1_correlations_legacy",
+                cancer_type=row.get("project", ""),
+                test_description=row.get("comparison", ""),
+                test_type="spearman",
+                statistic=row.get("rho", np.nan),
+                p_value=row.get("p_value", np.nan),
+                n=row.get("n", np.nan),
+            )
+        print(f"  Loaded {len(h1)} p-values from hypothesis1_correlations.csv")
+
+    # 3) Tumor-normal paired/unpaired tests
+    tn_path = os.path.join(DATA_DIR, "tumor_normal_comparison.csv")
     if os.path.exists(tn_path):
         tn = pd.read_csv(tn_path)
         for _, row in tn.iterrows():
-            all_pvals.append({
-                "source": "tumor_normal",
-                "cancer_type": row.get("cancer_type", row.get("project", "")),
-                "test_description": row.get("comparison", row.get("test", "")),
-                "test_type": row.get("test", ""),
-                "statistic": row.get("statistic", row.get("rho", np.nan)),
-                "p_value": row.get("p_value", np.nan),
-                "n": row.get("n", np.nan),
-            })
-        print(f"  Loaded {len(tn)} p-values from tumor_normal_results.csv")
+            ctype = row.get("project", "")
+            analyte = row.get("analyte", "")
+            n_pairs = row.get("n_pairs", np.nan)
+            append_entry(
+                source="tumor_normal",
+                cancer_type=ctype,
+                test_description=f"{analyte}_wilcoxon",
+                test_type="wilcoxon",
+                statistic=row.get("wilcoxon_stat", np.nan),
+                p_value=row.get("wilcoxon_p", np.nan),
+                n=n_pairs,
+            )
+            append_entry(
+                source="tumor_normal",
+                cancer_type=ctype,
+                test_description=f"{analyte}_mannwhitney",
+                test_type="mannwhitney",
+                statistic=row.get("mannwhitney_stat", np.nan),
+                p_value=row.get("mannwhitney_p", np.nan),
+                n=n_pairs,
+            )
+        print(f"  Loaded {2 * len(tn)} p-values from tumor_normal_comparison.csv")
 
-    # 4) Immune subtype results
-    im_path = os.path.join(DATA_DIR, "immune_subtype_results.csv")
+    # 4) Immune subtype tests
+    im_path = os.path.join(DATA_DIR, "immune_subtype_comparison.csv")
     if os.path.exists(im_path):
         im = pd.read_csv(im_path)
         for _, row in im.iterrows():
-            all_pvals.append({
-                "source": "immune_subtype",
-                "cancer_type": row.get("cancer_type", row.get("project", "")),
-                "test_description": row.get("comparison", row.get("test", "")),
-                "test_type": row.get("test", ""),
-                "statistic": row.get("statistic", row.get("rho", np.nan)),
-                "p_value": row.get("p_value", np.nan),
-                "n": row.get("n", np.nan),
-            })
-        print(f"  Loaded {len(im)} p-values from immune_subtype_results.csv")
+            ctype = row.get("project", "")
+            append_entry(
+                source="immune_subtype",
+                cancer_type=ctype,
+                test_description="circadian_cv_subtypes_kruskal",
+                test_type="kruskal",
+                statistic=row.get("kruskal_stat", np.nan),
+                p_value=row.get("kruskal_p", np.nan),
+                n=row.get("n_total", np.nan),
+            )
+            append_entry(
+                source="immune_subtype",
+                cancer_type=ctype,
+                test_description="active_masking_vs_decoherence_mannwhitney",
+                test_type="mannwhitney",
+                statistic=row.get("mw_am_vs_dc_stat", np.nan),
+                p_value=row.get("mw_am_vs_dc_p", np.nan),
+                n=row.get("n_total", np.nan),
+            )
+        print(f"  Loaded {2 * len(im)} p-values from immune_subtype_comparison.csv")
 
     # 5) Survival log-rank results
     sv_path = os.path.join(DATA_DIR, "survival_logrank_results.csv")
     if os.path.exists(sv_path):
         sv = pd.read_csv(sv_path)
         for _, row in sv.iterrows():
-            all_pvals.append({
-                "source": "survival",
-                "cancer_type": row.get("cancer_type", ""),
-                "test_description": row.get("test", ""),
-                "test_type": "logrank",
-                "statistic": row.get("statistic", np.nan),
-                "p_value": row.get("p_value", np.nan),
-                "n": row.get("n_Q1", np.nan),
-            })
+            append_entry(
+                source="survival",
+                cancer_type=row.get("cancer_type", ""),
+                test_description=row.get("test", ""),
+                test_type="logrank",
+                statistic=row.get("statistic", np.nan),
+                p_value=row.get("p_value", np.nan),
+                n=row.get("n_Q1", np.nan),
+            )
         print(f"  Loaded {len(sv)} p-values from survival_logrank_results.csv")
 
     # 6) Stage analysis results (this script)
