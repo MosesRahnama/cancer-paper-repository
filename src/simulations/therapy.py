@@ -107,6 +107,35 @@ def bioelectric_reprogramming(tissue: Tissue, target_id: str):
     tissue.edges.add(("clock", target_id, RelationType.TEMPORAL))
 
 
+def combination_checkpoint_differentiation(tissue: Tissue, target_id: str):
+    """
+    Combination therapy: checkpoint inhibitor (anti-PD-1) + differentiation (ATRA).
+
+    Two-step mechanism:
+      1. Restore observability (checkpoint inhibitor) -- so the cell can
+         "hear" organism-level stop signals.
+      2. Restore identity (differentiation) -- redirect cell back into
+         the organism's boundary program.
+
+    Rationale: checkpoint inhibition alone creates a stalemate (the immune
+    system can see the cell, but the cell keeps proliferating).
+    Differentiation alone may fail if cells can't receive the signal.
+    The combination is predicted to be synergistic -- restoring the
+    communication channel first, then sending the corrective signal.
+    """
+    if target_id not in tissue.cells:
+        return
+    cell = tissue.cells[target_id]
+    if cell.state != CellState.CANCER:
+        return
+
+    # Step 1: Restore observability (forced distinction / checkpoint inhibitor)
+    checkpoint_inhibitor(tissue, target_id)
+
+    # Step 2: Restore identity (differentiation therapy)
+    differentiation_therapy(tissue, target_id)
+
+
 def apply_therapy_to_all_cancer(tissue: Tissue, therapy_fn):
     """Apply a therapy function to every cancer cell in the tissue."""
     cancer_ids = [

@@ -38,5 +38,13 @@
     "pre_therapy_cancer": 376,
     "post_therapy_kappa": 0.19857099559598207,
     "post_therapy_cancer": 376
+  },
+  {
+    "therapy": "Combination (Anti-PD-1 + ATRA)",
+    "treated_cells": 376,
+    "pre_therapy_kappa": 0.41778353548029346,
+    "pre_therapy_cancer": 376,
+    "post_therapy_kappa": 0.4414935646304662,
+    "post_therapy_cancer": 0
   }
 ]

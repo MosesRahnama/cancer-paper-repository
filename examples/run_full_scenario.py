@@ -23,6 +23,7 @@ from simulations.therapy import (
     forced_distinction,
     checkpoint_inhibitor,
     bioelectric_reprogramming,
+    combination_checkpoint_differentiation,
 )
 
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), "..", "results")
@@ -124,6 +125,7 @@ def main():
         ("Differentiation Therapy (ATRA)", differentiation_therapy),
         ("Checkpoint Inhibitor (anti-PD-1)", checkpoint_inhibitor),
         ("Bioelectric Reprogramming (Levin)", bioelectric_reprogramming),
+        ("Combination (Anti-PD-1 + ATRA)", combination_checkpoint_differentiation),
     ]
 
     all_results = []
