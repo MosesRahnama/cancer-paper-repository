@@ -144,6 +144,16 @@ def main():
     if "project_short_name" in df_out.columns:
         df_out["project_short_name"] = "TCGA-" + df_out["project_short_name"]
 
+    # Calculate approximate tumor purity from stromal and leukocyte fractions
+    # Purity ≈ 1 - (Stromal + Leukocyte) = tumor epithelial cell fraction
+    if "stromal_fraction" in df_out.columns and "leukocyte_fraction" in df_out.columns:
+        df_out["purity"] = 1.0 - (df_out["stromal_fraction"] + df_out["leukocyte_fraction"])
+        # Clip to [0, 1] range (handle any measurement errors)
+        df_out["purity"] = df_out["purity"].clip(0.0, 1.0)
+        print(f"\n  Calculated tumor purity from stromal + leukocyte fractions")
+        print(f"    Mean purity: {df_out['purity'].mean():.3f}")
+        print(f"    Range: [{df_out['purity'].min():.3f}, {df_out['purity'].max():.3f}]")
+
     # Save to target location
     os.makedirs(os.path.dirname(TARGET_FILE), exist_ok=True)
     df_out.to_csv(TARGET_FILE, index=False)
