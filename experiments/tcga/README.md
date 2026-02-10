@@ -101,8 +101,8 @@ python tcga_survival.py            # Kaplan-Meier survival analysis
 python tcga_stage_analysis.py      # Stage-stratified analysis + FDR correction
 
 # 3. OPTIONAL: Run robustness checks with covariate control (for peer review)
-# Requires optional purity/immune covariate file (see script #8 documentation)
-python robustness_check.py         # Multivariable Cox models with stage/purity controls
+# Requires optional covariate file (see script #8 documentation)
+python robustness_check.py         # Multivariable Cox models with stage + microenvironment controls
 
 # All results saved to current directory + figures/ subdirectory
 ```
@@ -283,21 +283,22 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 
 **Outputs**:
 - `robustness_cox_coefficients.csv` (covariate-level Cox coefficients, HRs, CIs, p-values)
-- `robustness_primary_tests.csv` (pre-specified primary robustness tests with BH q-values)
+- `robustness_primary_tests.csv` (pre-specified survival robustness tests with BH q-values)
 - `robustness_ph_diagnostics.csv` (proportional hazards diagnostics)
-- `robustness_partial_correlations.csv` (optional purity/immune partial-correlation tests; empty header-only file if covariates unavailable)
+- `robustness_partial_correlations.csv` (optional partial-correlation controls; empty header-only file if covariates unavailable)
 
 **What it does:**
 1. Runs multivariable Cox proportional hazards models for Active Masking vs Decoherence survival
 2. Controls for tumor stage (categorical: I/II/III/IV/missing)
-3. Optionally controls for tumor purity and immune infiltration if covariate file is provided
+3. Optionally controls for purity and microenvironment covariates if provided
 4. Tests proportional hazards assumption via covariate × log(time) interaction screens
 5. Tests continuous PD-L1 × circadian clock interaction models
-6. Applies Benjamini-Hochberg FDR correction across all robustness tests
+6. Runs a sensitivity model adding continuous PD-L1 + B2M to test boundary mode beyond class components
+7. Applies Benjamini-Hochberg FDR correction across primary robustness tests
 
-**Optional Purity/Immune Covariate File:**
+**Optional Covariate File (Purity/Microenvironment):**
 
-This script can optionally incorporate tumor purity and immune infiltration estimates as covariates. To use this feature, create a CSV file with the following structure:
+This script can optionally incorporate tumor purity and microenvironment estimates as covariates. To use this feature, create a CSV file with the following structure:
 
 **File name** (one of these, checked in order):
 - `tcga_purity_immune_covariates.csv` (recommended)
@@ -310,7 +311,11 @@ This script can optionally incorporate tumor purity and immune infiltration esti
 **Optional columns** (any recognized variant):
 - **Tumor purity**: `purity`, `tumor_purity`, `cpe`, `estimate_purity`, `absolute_purity`, `consensus_purity`
 - **Lymphoid infiltration**: `lymphocyte_infiltration`, `lymphocyte_score`, `immune_lymphoid`
-- **Myeloid infiltration**: `myeloid_infiltration`, `myeloid_score`, `immune_myeloid`
+- **Myeloid infiltration**: `myeloid_infiltration`, `myeloid_score`, `immune_myeloid`, `macrophage_regulation`
+- **Leukocyte fraction**: `leukocyte_fraction`, `leukocyte_score`, `immune_leukocyte`
+- **Stromal fraction**: `stromal_fraction`, `stromal_score`
+- **IFN-γ response**: `ifn_gamma_response`, `ifng_response`, `ifn-gamma_response`
+- **TGF-β response**: `tgfb_response`, `tgf_beta_response`, `tgf-beta_response`
 - **Project ID**: `project_short_name`, `project_id`, `cohort`
 
 **Where to get these estimates:**
@@ -319,14 +324,14 @@ This script can optionally incorporate tumor purity and immune infiltration esti
 - **xCell/CIBERSORT**: Cell-type deconvolution tools for immune infiltration estimates
 - **Pre-computed TCGA estimates**: Available from Thorsson et al. 2018 Immunity paper (PanCancer immune landscape)
 
-**Note**: If no covariate file is found, the script runs without purity/immune controls (stage-only adjustment). This is **acceptable** because:
+**Note**: If no covariate file is found, the script runs without optional controls (stage-only adjustment). This is **acceptable** because:
 1. Our primary results (circadian CV vs PD-L1 correlation, Active Masking subtype definition) do not depend on survival modeling
 2. Stage-adjusted Cox models provide an initial clinical-covariate check
-3. Purity/immune controls are a sensitivity check, not a primary requirement
+3. Optional purity/microenvironment controls are a sensitivity check, not a primary requirement
 
 **When to run this script:**
 - For manuscript peer review requiring multivariable survival models
-- To test robustness of survival findings to stage, purity, and immune confounders
+- To test robustness of survival findings to stage and microenvironment confounders
 - To explore continuous PD-L1 × clock interactions beyond categorical Active Masking/Decoherence subtypes
 
 **When NOT to run this script:**
@@ -367,11 +372,11 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 | `stage_analysis_results.csv` | 48 | 6 | Stage-trend and stage-group tests across markers/cancers |
 | `survival_logrank_results.csv` | 12 | 10 | Log-rank tests with within-family and global FDR columns |
 | `master_fdr_results.csv` | 244 | 9 | Comprehensive FDR-corrected p-values across all analyses |
-| `tcga_purity_immune_covariates.csv` | varies | 3-6 | **OPTIONAL**: Tumor purity and immune infiltration estimates for robustness checks (user-provided; see script #8 documentation for sources) |
+| `tcga_purity_immune_covariates.csv` | varies | 3-10 | **OPTIONAL**: Tumor purity and microenvironment estimates for robustness checks (user-provided; see script #8 documentation for accepted columns) |
 | `robustness_cox_coefficients.csv` | varies | 13 | Multivariable Cox coefficients (HR, CI, p-value per covariate) |
-| `robustness_primary_tests.csv` | varies | 12 | Primary robustness tests with BH correction (AM-vs-DC, interaction, high-PD-L1 clock effect) |
+| `robustness_primary_tests.csv` | varies | 12 | Primary robustness tests with BH correction (AM-vs-DC, AM-vs-DC+PD-L1/B2M, interaction, high-PD-L1 clock effect) |
 | `robustness_ph_diagnostics.csv` | varies | 8+ | Proportional hazards diagnostics (generated by `robustness_check.py`) |
-| `robustness_partial_correlations.csv` | varies | 7 | Optional purity/immune partial-correlation sensitivity tests |
+| `robustness_partial_correlations.csv` | varies | 7 | Optional partial-correlation sensitivity tests with available controls |
 
 ### Figures (PNG, 300 DPI)
 

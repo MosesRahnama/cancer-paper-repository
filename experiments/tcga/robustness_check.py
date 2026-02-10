@@ -7,7 +7,7 @@ Implements a reviewer-resistant robustness layer on top of tcga_survival.py:
 2) Stage as categorical covariates (I reference; II/III/IV + missing indicator)
 3) Proportional hazards diagnostics via covariate x log(time) interaction screens
 4) Continuous PD-L1 x clock interaction model
-5) Optional purity/immune covariate merge hooks
+5) Optional microenvironment covariate merge hooks (purity/immune/stromal/IFN/TGFB)
 6) BH correction across primary robustness tests
 
 Dependencies: numpy, pandas, scipy (no lifelines/statsmodels required)
@@ -62,6 +62,30 @@ IMMUNE_MYELOID_CANDIDATES = [
     "myeloid_score",
     "myeloid",
     "immune_myeloid",
+    "macrophage_regulation",
+]
+
+IMMUNE_LEUKOCYTE_CANDIDATES = [
+    "leukocyte_fraction",
+    "leukocyte_score",
+    "immune_leukocyte",
+]
+
+STROMAL_COL_CANDIDATES = [
+    "stromal_fraction",
+    "stromal_score",
+]
+
+IFNG_COL_CANDIDATES = [
+    "ifn_gamma_response",
+    "ifng_response",
+    "ifn-gamma_response",
+]
+
+TGFB_COL_CANDIDATES = [
+    "tgfb_response",
+    "tgf_beta_response",
+    "tgf-beta_response",
 ]
 
 CASE_ID_CANDIDATES = [
@@ -75,6 +99,16 @@ PROJECT_COL_CANDIDATES = [
     "project_short_name",
     "project_id",
     "cohort",
+]
+
+OPTIONAL_CONTROL_ORDER = [
+    "purity",
+    "immune_lymphoid",
+    "immune_myeloid",
+    "immune_leukocyte",
+    "stromal_fraction",
+    "ifn_gamma_response",
+    "tgfb_response",
 ]
 
 
@@ -134,6 +168,10 @@ def load_optional_covariates(path: str | None):
       - purity (optional)
       - immune_lymphoid (optional)
       - immune_myeloid (optional)
+      - immune_leukocyte (optional)
+      - stromal_fraction (optional)
+      - ifn_gamma_response (optional)
+      - tgfb_response (optional)
     """
     candidate_paths = []
     if path:
@@ -164,6 +202,10 @@ def load_optional_covariates(path: str | None):
     purity_col = find_first_existing_column(extra, PURITY_COL_CANDIDATES)
     lymph_col = find_first_existing_column(extra, IMMUNE_LYMPH_CANDIDATES)
     myeloid_col = find_first_existing_column(extra, IMMUNE_MYELOID_CANDIDATES)
+    leuk_col = find_first_existing_column(extra, IMMUNE_LEUKOCYTE_CANDIDATES)
+    stromal_col = find_first_existing_column(extra, STROMAL_COL_CANDIDATES)
+    ifng_col = find_first_existing_column(extra, IFNG_COL_CANDIDATES)
+    tgfb_col = find_first_existing_column(extra, TGFB_COL_CANDIDATES)
 
     mapped = pd.DataFrame()
     mapped["case_barcode"] = extra[case_col].astype(str).str.strip()
@@ -177,6 +219,14 @@ def load_optional_covariates(path: str | None):
         mapped["immune_lymphoid"] = pd.to_numeric(extra[lymph_col], errors="coerce")
     if myeloid_col is not None:
         mapped["immune_myeloid"] = pd.to_numeric(extra[myeloid_col], errors="coerce")
+    if leuk_col is not None:
+        mapped["immune_leukocyte"] = pd.to_numeric(extra[leuk_col], errors="coerce")
+    if stromal_col is not None:
+        mapped["stromal_fraction"] = pd.to_numeric(extra[stromal_col], errors="coerce")
+    if ifng_col is not None:
+        mapped["ifn_gamma_response"] = pd.to_numeric(extra[ifng_col], errors="coerce")
+    if tgfb_col is not None:
+        mapped["tgfb_response"] = pd.to_numeric(extra[tgfb_col], errors="coerce")
 
     if "project_short_name" in mapped.columns:
         group_keys = ["case_barcode", "project_short_name"]
@@ -240,7 +290,7 @@ def prepare_analysis_df(extra_covariates_path: str | None):
     if extra_df is not None:
         merge_keys = ["case_barcode", "project_short_name"] if "project_short_name" in extra_df.columns else ["case_barcode"]
         merged = merged.merge(extra_df, on=merge_keys, how="left")
-        extra_cols = [c for c in ["purity", "immune_lymphoid", "immune_myeloid"] if c in merged.columns]
+        extra_cols = [c for c in OPTIONAL_CONTROL_ORDER if c in merged.columns]
 
     return merged, extra_cols, extra_path
 
@@ -613,8 +663,9 @@ def run_for_project(df_all: pd.DataFrame, project: str, extra_cols):
     # ------------------------------------------------------------------
     amdc = sub[sub["bf_class"].isin(["Active_Masking", "Decoherence"])].copy()
     amdc["boundary_mode"] = (amdc["bf_class"] == "Active_Masking").astype(float)
+    extra_covars = [c for c in OPTIONAL_CONTROL_ORDER if c in extra_cols and c in amdc.columns]
 
-    cov_m1 = ["boundary_mode"] + base_covars + [c for c in extra_cols if c in amdc.columns]
+    cov_m1 = ["boundary_mode"] + base_covars + extra_covars
 
     fit_m1, m1_data, status_m1 = fit_cox_breslow(
         amdc,
@@ -646,6 +697,45 @@ def run_for_project(df_all: pd.DataFrame, project: str, extra_cols):
     add_primary_test(primary_records, project, "am_vs_dc_adjusted", fit_m1, "boundary_mode")
 
     # ------------------------------------------------------------------
+    # Model 1b: AM vs DC adjusted + continuous PD-L1/B2M sensitivity
+    # ------------------------------------------------------------------
+    cov_m1b = ["boundary_mode", "pdl1_log", "b2m_log"] + base_covars + extra_covars
+
+    fit_m1b, m1b_data, status_m1b = fit_cox_breslow(
+        amdc,
+        duration_col="surv_time",
+        event_col="event",
+        covariates=cov_m1b,
+    )
+
+    if fit_m1b is not None:
+        tmp = fit_m1b["coef"].copy()
+        tmp["project"] = project
+        tmp["model"] = "cox_am_vs_dc_plus_pdl1_b2m"
+        coef_records.append(tmp)
+
+        ph_records.extend(
+            ph_time_interaction_screen(
+                m1b_data,
+                duration_col="surv_time",
+                event_col="event",
+                covariates=fit_m1b["meta"]["covariates_used"],
+                model_label="cox_am_vs_dc_plus_pdl1_b2m",
+                project=project,
+            )
+        )
+    else:
+        print(f"[{project}] cox_am_vs_dc_plus_pdl1_b2m failed: {status_m1b}")
+
+    add_primary_test(
+        primary_records,
+        project,
+        "am_vs_dc_plus_pdl1_b2m",
+        fit_m1b,
+        "boundary_mode",
+    )
+
+    # ------------------------------------------------------------------
     # Model 2: Continuous PD-L1 x clock interaction
     # ------------------------------------------------------------------
     sub2 = sub.copy()
@@ -655,7 +745,7 @@ def run_for_project(df_all: pd.DataFrame, project: str, extra_cols):
         "pdl1_log",
         "circ_cv_ortho",
         "pdl1_x_clock",
-    ] + base_covars + [c for c in extra_cols if c in sub2.columns]
+    ] + base_covars + [c for c in extra_covars if c in sub2.columns]
 
     fit_m2, m2_data, status_m2 = fit_cox_breslow(
         sub2,
@@ -692,7 +782,7 @@ def run_for_project(df_all: pd.DataFrame, project: str, extra_cols):
     pdl1_cut = sub["pdl1_log"].median()
     high = sub[sub["pdl1_log"] >= pdl1_cut].copy()
 
-    cov_m3 = ["circ_cv_ortho"] + base_covars + [c for c in extra_cols if c in high.columns]
+    cov_m3 = ["circ_cv_ortho"] + base_covars + [c for c in extra_covars if c in high.columns]
     fit_m3, _, status_m3 = fit_cox_breslow(
         high,
         duration_col="surv_time",
@@ -711,64 +801,45 @@ def run_for_project(df_all: pd.DataFrame, project: str, extra_cols):
     add_primary_test(primary_records, project, "high_pdl1_clock_effect", fit_m3, "circ_cv_ortho")
 
     # ------------------------------------------------------------------
-    # Partial-correlation controls (if purity exists)
+    # Partial-correlation controls (using whatever controls are available)
     # ------------------------------------------------------------------
-    has_purity = "purity" in sub.columns
-    has_lymph = "immune_lymphoid" in sub.columns
-    has_myeloid = "immune_myeloid" in sub.columns
-
-    if has_purity:
-        covars = ["purity"]
-
-        out = partial_rank_correlation(sub, "circ_cv", "pdl1_log", covars)
+    available_controls = [c for c in OPTIONAL_CONTROL_ORDER if c in sub.columns]
+    if available_controls:
+        out = partial_rank_correlation(sub, "circ_cv", "pdl1_log", available_controls)
         if out is not None:
             partial_records.append(
                 {
                     "project": project,
-                    "test_name": "partial_corr_circ_cv_vs_pdl1_given_purity",
-                    "covariates": ",".join(covars),
+                    "test_name": "partial_corr_circ_cv_vs_pdl1_given_controls",
+                    "covariates": ",".join(available_controls),
                     **out,
                 }
             )
-            primary_records.append(
-                {
-                    "project": project,
-                    "test_name": "partial_corr_circ_cv_vs_pdl1_given_purity",
-                    "covariate": "circ_cv",
-                    "p_value": out["p_value"],
-                    "hazard_ratio": np.nan,
-                    "ci95_low": np.nan,
-                    "ci95_high": np.nan,
-                    "n_rows": out["n_rows"],
-                    "n_events": np.nan,
-                    "status": "ok",
-                }
-            )
 
-        out = partial_rank_correlation(sub, "circ_cv_ortho", "pdl1_log", covars)
+        out = partial_rank_correlation(sub, "circ_cv_ortho", "pdl1_log", available_controls)
         if out is not None:
             partial_records.append(
                 {
                     "project": project,
-                    "test_name": "partial_corr_ortho_cv_vs_pdl1_given_purity",
-                    "covariates": ",".join(covars),
+                    "test_name": "partial_corr_ortho_cv_vs_pdl1_given_controls",
+                    "covariates": ",".join(available_controls),
                     **out,
                 }
             )
 
-        if has_lymph or has_myeloid:
-            covars2 = ["purity"]
-            if has_lymph:
-                covars2.append("immune_lymphoid")
-            if has_myeloid:
-                covars2.append("immune_myeloid")
-            out = partial_rank_correlation(sub, "circ_cv_ortho", "pdl1_log", covars2)
+        if "ifn_gamma_response" in available_controls:
+            out = partial_rank_correlation(
+                sub,
+                "circ_cv_ortho",
+                "pdl1_log",
+                ["ifn_gamma_response"],
+            )
             if out is not None:
                 partial_records.append(
                     {
                         "project": project,
-                        "test_name": "partial_corr_ortho_cv_vs_pdl1_given_purity_immune",
-                        "covariates": ",".join(covars2),
+                        "test_name": "partial_corr_ortho_cv_vs_pdl1_given_ifng",
+                        "covariates": "ifn_gamma_response",
                         **out,
                     }
                 )
@@ -814,7 +885,7 @@ def main():
         raise SystemExit("No valid projects selected.")
 
     print("=" * 74)
-    print("  TCGA Robustness Checks: Cox + PH + Purity/Immune Hooks + Interaction")
+    print("  TCGA Robustness Checks: Cox + PH + Microenvironment Controls + Interaction")
     print("=" * 74)
 
     df_all, extra_cols, extra_path = prepare_analysis_df(args.covariates)
@@ -826,9 +897,9 @@ def main():
         if extra_cols:
             print(f"Covariate columns detected: {extra_cols}")
         else:
-            print("No numeric purity/immune covariates detected in optional file.")
+            print("No numeric control covariates detected in optional file.")
     else:
-        print("No optional purity/immune covariate file found. Running clinical-only controls.")
+        print("No optional covariate file found. Running clinical-only controls.")
 
     coef_frames = []
     primary_rows = []
