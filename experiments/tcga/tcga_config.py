@@ -6,12 +6,21 @@ import numpy as np
 import pandas as pd
 
 # ── Paths ──────────────────────────────────────────────────────────────────
-CREDENTIALS_PATH = r"C:\Users\Moses\commercials\infra\secrets\gcp-credentials.json"
+# Get the directory where this config file is located (experiments/tcga/)
+_CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
+_REPO_ROOT = os.path.dirname(os.path.dirname(_CONFIG_DIR))  # Two levels up to repo root
+
+# GCP credentials: use env var if set, otherwise look in infra/secrets/
+_DEFAULT_CREDS = os.path.join(_REPO_ROOT, "infra", "secrets", "gcp-credentials.json")
+CREDENTIALS_PATH = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", _DEFAULT_CREDS)
+
 PROJECT_ID = "kernel-o6"
 GCS_BUCKET = "kernel-o6"
 GCS_PREFIX = "tcga_cancer_boundary"
-DATA_DIR = r"C:\Users\Moses\Cancer\data"
-FIGURE_DIR = r"C:\Users\Moses\Cancer\data\figures"
+
+# Data and figure directories relative to this script's location
+DATA_DIR = _CONFIG_DIR  # Same directory as the scripts
+FIGURE_DIR = os.path.join(_CONFIG_DIR, "figures")
 
 # ── Gene Groups ────────────────────────────────────────────────────────────
 # Original gene names (for BigQuery queries)
