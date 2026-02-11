@@ -10,7 +10,7 @@
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{graphicx}
-\graphicspath{{results/}{cancer-paper-repository/results/}}
+\graphicspath{{./}{../}}
 \usepackage{float}
 \usepackage{enumitem}
 \usepackage[T1]{fontenc}
@@ -81,12 +81,12 @@ This is not a molecular or clinical oncology model. It does not predict patient 
 
 \subsection*{Clinical Impact: Boundary-Failure Mode Predicts Survival}
 
-The framework is not purely theoretical. Analysis of $n=3{,}611$ tumor samples across six TCGA cohorts, plus a deduplicated patient-level survival cohort ($n=3{,}089$ with valid overall-survival data), shows that boundary-failure mode is clinically associated with outcome. Figure~\ref{fig:survival-preview} shows Kaplan-Meier survival by subtype: \textbf{Active Masking} tumors (high PD-L1, intact circadian clock) have better overall survival than \textbf{Decoherence} tumors (low PD-L1, low antigen presentation) in melanoma (log-rank $p = 0.0011$, BH $q = 0.0066$), with the same direction but only nominal significance in lung adenocarcinoma ($p = 0.049$, $q = 0.147$). Full analysis is in Section~\ref{sec:tcga}.
+The framework is not purely theoretical. Analysis of $n=3{,}611$ tumor samples across six TCGA cohorts, plus a deduplicated patient-level survival cohort ($n=3{,}089$ with valid overall-survival data), shows that boundary-failure mode is clinically associated with outcome. Figure~\ref{fig:survival-preview} summarizes FDR-adjusted survival evidence across all cohorts: Active Masking vs.\ Decoherence is significant in melanoma (log-rank $p = 0.0011$, BH $q = 0.0066$), directionally similar but nominal in lung adenocarcinoma ($p = 0.049$, $q = 0.147$), and quartile-based circadian CV alone is not significant in any cohort. Full Kaplan-Meier curves are presented in Section~\ref{sec:tcga}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{results/survival_boundary_failure.png}
-\caption{\textbf{Boundary-failure mode and overall survival (patient-level analysis).} Kaplan-Meier survival curves by boundary-failure subtype after enforcing one tumor sample per case: TCGA melanoma (SKCM, $n=301$ valid OS cases; Active Masking $n=58$, Decoherence $n=122$) and lung adenocarcinoma (LUAD, $n=432$; Active Masking $n=65$, Decoherence $n=157$). Active Masking shows longer survival than Decoherence in SKCM (log-rank $p = 0.0011$, BH $q = 0.0066$ across six AM-vs-DC tests) and a directionally consistent nominal signal in LUAD ($p = 0.049$, $q = 0.147$). Complete analysis in Section~\ref{sec:tcga}.}
+\includegraphics[width=0.95\textwidth]{results/survival_test_qvalue_summary.png}
+\caption{\textbf{Cross-cohort survival evidence summary (FDR-adjusted).} Grouped bars show $-\log_{10}(q)$ across six TCGA cohorts for two pre-specified survival tests: Active Masking vs.\ Decoherence and circadian-CV quartile (Q1 vs Q4). The AM-vs-DC contrast shows strongest support in melanoma (SKCM), while circadian quartiles alone are non-significant across cohorts. Asterisks denote FDR-significant tests ($q<0.05$).}
 \label{fig:survival-preview}
 \end{figure}
 
@@ -126,13 +126,13 @@ The atavistic model explains reactivation of proliferative drives, but critics n
 
 \subsection*{Preview: Empirical Validation Across Six Cancer Types}
 
-Before developing the formal framework, we preview the empirical foundation: validation across six TCGA cancer cohorts ($n=3{,}611$ tumor samples) confirms the framework's core predictions. Figure~\ref{fig:multicancer-heatmap-preview} shows a consistent negative circadian CV\textendash{}PD-L1 coupling in \textbf{all six cancer types} (100\% replication rate, all FDR-corrected $q < 0.05$): higher PD-L1 is associated with lower circadian CV (more locked/coherent clock-gene expression). This cross-cancer coupling between temporal boundary mechanisms (circadian program state) and immune boundary mechanisms (checkpoint engagement) supports the unifying boundary-failure interpretation. Detailed analysis, survival outcomes, and Active Masking vs.\ Decoherence stratification are presented in Section~\ref{sec:tcga}.
+Before developing the formal framework, we preview the empirical foundation: validation across six TCGA cancer cohorts ($n=3{,}611$ tumor samples) confirms the framework's core predictions. Figure~\ref{fig:multicancer-forest-preview} shows a consistent negative circadian CV\textendash{}PD-L1 coupling in \textbf{all six cancer types} (100\% replication rate, all FDR-corrected $q < 0.05$): higher PD-L1 is associated with lower circadian CV (more locked/coherent clock-gene expression). This cross-cancer coupling between temporal boundary mechanisms (circadian program state) and immune boundary mechanisms (checkpoint engagement) supports the unifying boundary-failure interpretation. Detailed analysis, survival outcomes, and Active Masking vs.\ Decoherence stratification are presented in Section~\ref{sec:tcga}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{results/multicancer_correlation_heatmap.png}
-\caption{\textbf{Cross-cancer validation of boundary-failure predictions.} Spearman correlation heatmap across six TCGA cancer types ($n=3{,}611$ tumor samples: melanoma, lung adenocarcinoma, breast, colon, head-neck, lung squamous). The top row shows circadian CV vs.\ PD-L1 (CD274): negative correlations replicate in all six cancer types (effect sizes $\rho = -0.125$ to $-0.381$, all FDR $q < 0.05$), consistent with circadian restructuring/locking coupled to immune checkpoint engagement across cancer origins. This provides empirical support for the boundary-failure framework developed in the following sections. Complete analysis in Section~\ref{sec:tcga}.}
-\label{fig:multicancer-heatmap-preview}
+\includegraphics[width=0.95\textwidth]{results/multicancer_circadian_cv_forest.png}
+\caption{\textbf{Cross-cancer circadian-CV vs.\ PD-L1 replication.} Forest plot of Spearman correlations for circadian CV versus CD274 across six TCGA cohorts ($n=3{,}611$ tumors total). All six effects are negative and FDR-significant, with cohort-specific magnitudes from $\rho=-0.125$ to $\rho=-0.381$.}
+\label{fig:multicancer-forest-preview}
 \end{figure}
 
 %==============================================================================
@@ -270,6 +270,13 @@ However, empirical analysis of TCGA cohorts (Section~\ref{sec:tcga}) reveals a p
 C_G(G_{\text{tumor}}) + C_S(S_{\text{tumor}}) > B_{\text{homeostasis}}.
 \end{equation}
 The tumor sustains both high proliferation and high internal coherence (the ``Active Masking'' phenotype) by expanding its metabolic capacity via the Warburg effect and externalizing costs to the host. This interpretation aligns with the cachexia model: the ``impossible'' high-energy state of the tumor is paid for by systemic catabolism of host tissue.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{experiments/tcga/figures/control_budget_combined.png}
+\caption{Empirical control-budget stress test across six TCGA cohorts. Proliferation proxy (MYC) is plotted against a composite differentiation/coherence score with upper-bound trend overlays. The absence of a consistent negative frontier supports the manuscript's ``budget escape'' interpretation rather than a strict in-tumor trade-off.}
+\label{fig:control-budget-empirical}
+\end{figure}
 
 \begin{table}[H]
 \centering
@@ -631,13 +638,20 @@ Contrary to the naive ``broken clock'' prediction, tumors showed \textbf{lower} 
     \item TCGA-COAD: not significant
 \end{itemize}
 
-Tumors show \emph{lower} circadian CV (more uniform clock-gene expression) than matched normal tissue, not higher. This supports a ``locked, not broken'' \emph{transcriptional} restructuring interpretation: the clock-gene program appears co-opted rather than simply disrupted. Because CV is a within-sample cross-gene dispersion proxy from bulk RNA-seq, it does not establish temporal phase coherence or rhythmicity; time-series and single-cell assays are required for that. Figure~\ref{fig:tumor-normal} shows the paired tumor\textendash{}normal comparisons.
+Tumors show \emph{lower} circadian CV (more uniform clock-gene expression) than matched normal tissue, not higher. This supports a ``locked, not broken'' \emph{transcriptional} restructuring interpretation: the clock-gene program appears co-opted rather than simply disrupted. Because CV is a within-sample cross-gene dispersion proxy from bulk RNA-seq, it does not establish temporal phase coherence or rhythmicity; time-series and single-cell assays are required for that. Figures~\ref{fig:tumor-normal} and~\ref{fig:tumor-normal-summary} show paired comparisons and cohort-level summary statistics.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/tumor_normal_circadian_cv_paired.png}
 \caption{Circadian CV in tumor vs.\ matched normal tissue across five TCGA cancer types. Tumors show significantly \emph{lower} CV (more uniform clock-gene expression) than matched normals in 4/5 cancer types, supporting a transcript-level ``locked, not broken'' restructuring signature in this proxy.}
 \label{fig:tumor-normal}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{results/tumor_normal_circadian_cv_summary.png}
+\caption{Cohort-level summary of tumor-minus-normal circadian CV shifts across five TCGA cancer types. Four cohorts show negative deltas (tumor lower than normal), while COAD is near-neutral/non-significant, matching the paired-sample analysis.}
+\label{fig:tumor-normal-summary}
 \end{figure}
 
 \subsection{Active Masking vs.\ Temporal Decoherence Classification}
@@ -650,13 +664,27 @@ The circadian\textendash{}checkpoint coupling and tumor\textendash{}normal compa
     \item \textbf{Mixed:} all remaining tumors not classified into either category.
 \end{itemize}
 
-Thresholds were set at median expression within each cancer type. Active Masking tumors showed significantly \textbf{lower} circadian CV than Decoherence tumors in \textbf{all six cancer types} (Kruskal\textendash{}Wallis FDR $q < 10^{-9}$; pairwise AM-vs-DC Mann\textendash{}Whitney FDR $q < 10^{-4}$). This is consistent with the two boundary-failure modes having distinct circadian architectures: Active Masking tumors maintain tight clock coordination, while Decoherence tumors show variable and disordered circadian programs. Because subtype definitions include ARNTL and PER1, this CV contrast is interpreted as internal-consistency evidence rather than an independent validation endpoint.
+Thresholds were set at median expression within each cancer type. Active Masking tumors showed significantly \textbf{lower} circadian CV than Decoherence tumors in \textbf{all six cancer types} (Kruskal\textendash{}Wallis FDR $q < 10^{-9}$; pairwise AM-vs-DC Mann\textendash{}Whitney FDR $q < 10^{-4}$). This is consistent with the two boundary-failure modes having distinct circadian architectures: Active Masking tumors maintain tight clock coordination, while Decoherence tumors show variable and disordered circadian programs. Figure~\ref{fig:immune-subtype-prevalence} shows that both modes are represented in every cohort, and Figure~\ref{fig:immune-subtype-scatter} shows their separation in checkpoint-clock expression space. Because subtype definitions include ARNTL and PER1, the CV contrast is interpreted as internal-consistency evidence rather than an independent validation endpoint.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{results/immune_subtype_prevalence_stacked.png}
+\caption{Boundary-failure subtype composition across six TCGA cohorts. Active Masking, Decoherence, and Mixed classes are all present in each cohort, supporting a multi-mode rather than single-mode failure landscape.}
+\label{fig:immune-subtype-prevalence}
+\end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/immune_subtype_circadian_cv.png}
 \caption{Circadian CV by boundary-failure subtype across six TCGA cancer types. Active Masking tumors (high PD-L1, high BMAL1, low PER1) show consistently lower CV than Decoherence tumors (low PD-L1, low B2M) in all six cancer types (Kruskal\textendash{}Wallis FDR $q < 10^{-9}$; pairwise AM-vs-DC Mann\textendash{}Whitney FDR $q < 10^{-4}$), consistent with distinct circadian architectures for different boundary-failure modes. Because subtype definitions include ARNTL/PER1, this is interpreted as internal-consistency evidence rather than an independent validation endpoint.}
 \label{fig:immune-subtype}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{results/immune_subtype_boundary_scatter.png}
+\caption{Checkpoint-clock boundary space colored by subtype classification. Active Masking and Decoherence occupy separable regions defined by PD-L1, ARNTL, PER1, and B2M threshold logic, illustrating the operational geometry of the subtype rule.}
+\label{fig:immune-subtype-scatter}
 \end{figure}
 
 \subsection{Survival Analysis}
@@ -671,13 +699,20 @@ Active Masking tumors showed better overall survival than Decoherence tumors in 
     \item TCGA-BRCA, TCGA-COAD, TCGA-HNSC, TCGA-LUSC: not significant
 \end{itemize}
 
-Quartile-based circadian CV alone did \emph{not} predict survival in any of the six cancer types, suggesting that boundary-failure \emph{mode} may matter more than coherence level per se. A tumor with low circadian CV is not inherently better or worse; what matters is \emph{why} its clock is coherent. Active Masking tumors (coherent clock + checkpoint engagement) are plausibly more immune-visible, while Decoherence tumors (disordered clock + antigen loss) are plausibly more immune-evasive. Clinical-adjusted robustness models are reported in Section~\ref{subsec:robustness}.
+Quartile-based circadian CV alone did \emph{not} predict survival in any of the six cancer types (Figure~\ref{fig:survival-quartile}), suggesting that boundary-failure \emph{mode} may matter more than coherence level per se. A tumor with low circadian CV is not inherently better or worse; what matters is \emph{why} its clock is coherent. Active Masking tumors (coherent clock + checkpoint engagement) are plausibly more immune-visible, while Decoherence tumors (disordered clock + antigen loss) are plausibly more immune-evasive. Clinical-adjusted robustness models are reported in Section~\ref{subsec:robustness}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/survival_boundary_failure.png}
 \caption{Kaplan-Meier survival curves by boundary-failure subtype in the patient-level deduplicated cohort. Active Masking shows better overall survival than Decoherence in SKCM (log-rank $p = 0.0011$, BH $q = 0.0066$) and a directionally similar nominal trend in LUAD ($p = 0.049$, $q = 0.147$).}
 \label{fig:survival}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/survival_circadian_quartile.png}
+\caption{Kaplan-Meier curves by circadian-CV quartiles (Q1 most coherent to Q4 most decoherent) across the six TCGA cohorts. No cohort reaches FDR significance for Q1-vs-Q4 log-rank tests, indicating that coherence level alone is weaker than boundary-mode stratification for survival association in this dataset.}
+\label{fig:survival-quartile}
 \end{figure}
 
 \subsection{Robustness to Clinical Covariates and Interaction Structure}
@@ -693,7 +728,14 @@ To reduce confounding risk from clinical composition, we re-estimated the surviv
     \item \textbf{Partial-correlation controls:} The circadian CV\textendash{}PD-L1 association remained negative after adjusting for available control covariates (SKCM partial $r=-0.238$, $p=4.29\times10^{-5}$; LUAD partial $r=-0.144$, $p=0.00658$). Using the orthogonal clock metric, this adjusted association was strong in LUAD (partial $r=-0.269$, $p=2.52\times10^{-7}$) and weaker/non-significant in SKCM ($p=0.105$), indicating cohort-dependent robustness.
 \end{itemize}
 
-These robustness analyses remain observational and complete-case. Covariate availability reduced model sample sizes (for example, AM-vs-DC models used $n=175$ in SKCM and $n=183$ in LUAD). Time-interaction proportional-hazards screens indicated broad potential non-proportionality across covariates. Cox coefficients should therefore be interpreted as time-averaged associations pending stratified or explicitly time-varying follow-up models.
+These robustness analyses remain observational and complete-case. Covariate availability reduced model sample sizes (for example, AM-vs-DC models used $n=175$ in SKCM and $n=183$ in LUAD). Figure~\ref{fig:robustness-forest} summarizes hazard-ratio estimates and confidence intervals across pre-specified robustness models. Time-interaction proportional-hazards screens indicated broad potential non-proportionality across covariates. Cox coefficients should therefore be interpreted as time-averaged associations pending stratified or explicitly time-varying follow-up models.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/robustness_primary_hr_forest.png}
+\caption{Hazard-ratio forest plot for primary robustness models in SKCM and LUAD. Points show Cox HR estimates with 95\% confidence intervals; green markers denote FDR-significant tests. AM-vs-DC remains protective in adjusted models (stronger in LUAD), and PD-L1$\times$clock interaction is significant in SKCM.}
+\label{fig:robustness-forest}
+\end{figure}
 
 \subsection{Stage-Stratified Analysis}
 \label{subsec:stage}
@@ -702,13 +744,20 @@ To determine whether circadian restructuring is an early or late event in tumor 
 
 Circadian CV was \textbf{largely stage-stable}: 11/12 circadian-stage tests were non-significant after global FDR correction, with one borderline signal (TCGA-HNSC Spearman trend, $q \approx 0.050$). This near-threshold pattern remains more consistent with an early-established, persistent circadian restructuring state than with a strong late-stage accumulation effect. However, these associations do not by themselves establish temporal ordering or causality. (Other non-circadian markers, such as CD274/B2M and gap-junction summaries in specific cohorts, showed modest stage associations after global FDR correction.)
 
-This finding supports the framework's prediction that boundary failure can be a foundational event, a shift in the cell's relationship with the organism, rather than only a downstream consequence of tumor burden. It motivates, but does not yet establish, the use of circadian-based biomarkers for early disease settings.
+This finding supports the framework's prediction that boundary failure can be a foundational event, a shift in the cell's relationship with the organism, rather than only a downstream consequence of tumor burden. It motivates, but does not yet establish, the use of circadian-based biomarkers for early disease settings. Figure~\ref{fig:stage-spearman-summary} shows the corresponding Spearman trend effects and BH-adjusted $q$ values.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{results/stage_circadian_cv_boxplot.png}
 \caption{Circadian CV by pathologic tumor stage across six TCGA cancer types. Circadian-stage association is largely absent after global FDR correction, with one borderline HNSC trend ($q \approx 0.050$), consistent overall with stage-stable circadian restructuring.}
 \label{fig:stage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{results/stage_circadian_spearman_summary.png}
+\caption{Spearman stage-trend effect sizes for circadian CV across all six cohorts. Most effects are near zero after BH correction within circadian stage-trend tests, reinforcing a largely stage-stable circadian signal in this dataset.}
+\label{fig:stage-spearman-summary}
 \end{figure}
 
 \subsection{Implications for the Framework}
@@ -774,7 +823,7 @@ Combination (Anti-PD-1 + ATRA) & 0.441 & 0 \\
 \end{center}
 These values are illustrative and parameter-dependent, not efficacy rankings. In this configuration, differentiation-like restoration reaches a halt state, while partial distinction-restoration operators increase observability without full clearance.
 
-Figures~\ref{fig:therapy-comparison}, \ref{fig:kappa-trajectory}, \ref{fig:coherence-vs-cancer}, \ref{fig:state-distribution}, and~\ref{fig:tissue-network} visualize these trajectories from the companion codebase. The first two are generated by \texttt{python examples/run\_full\_scenario.py}; the latter three are generated by \texttt{python run\_simulation.py}. All outputs are written to \texttt{results/}.
+Figures~\ref{fig:therapy-comparison}, \ref{fig:kappa-trajectory}, \ref{fig:coherence-vs-cancer}, \ref{fig:state-distribution}, and~\ref{fig:tissue-network} visualize these trajectories from the companion codebase. The first two are generated by \texttt{python examples/run\_full\_scenario.py}; the latter three are generated by \texttt{python run\_simulation.py}. Figure~\ref{fig:phase2-baseline} and Figure~\ref{fig:phase2-unmasking} summarize multi-seed Phase-2 sweeps from \texttt{python run\_phase2\_extractions.py}. All outputs are written to \texttt{results/}.
 
 \begin{figure}[H]
 \centering
@@ -809,6 +858,20 @@ Figures~\ref{fig:therapy-comparison}, \ref{fig:kappa-trajectory}, \ref{fig:coher
 \includegraphics[width=\textwidth]{results/tissue_network.png}
 \caption{Representative tissue-network snapshot from the simulation, colored by cell state and showing local coupling structure.}
 \label{fig:tissue-network}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/phase2_baseline_kappa_summary.png}
+\caption{Phase-2 multi-seed sweep (baseline): post-therapy coherence summary for all operators under calibrated monthly parameters. Bars show mean and standard deviation across seeds for both base $\kappa$ and harmonic-aware $\kappa_{\mathrm{har}}$ variants.}
+\label{fig:phase2-baseline}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/phase2_unmasking_cancer_summary.png}
+\caption{Phase-2 multi-seed sweep with unmasking stressor: residual post-therapy cancer burden across operators. Differentiation-like restoration remains the dominant clearance regime in this illustrative stress configuration.}
+\label{fig:phase2-unmasking}
 \end{figure}
 
 %==============================================================================

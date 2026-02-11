@@ -1,22 +1,22 @@
 \contentsline {section}{\numberline {1}Introduction}{5}{section.1}%
 \contentsline {section}{\numberline {2}The Necessary Bug: Mutation as the Price of Innovation}{6}{section.2}%
 \contentsline {section}{\numberline {3}Positioning Within Cancer Theory}{7}{section.3}%
-\contentsline {section}{\numberline {4}Boundary Failure as Loss of Cross-Scale Observability}{10}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Relational Identity and Organism-Level Control}{10}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}The Identity Collapse}{10}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Distinction, Information, and Energetic Constraints}{10}{subsection.4.3}%
-\contentsline {section}{\numberline {5}A Structural Analogy to Recursive Self-Duplication}{11}{section.5}%
-\contentsline {subsection}{\numberline {5.1}The Computational Pattern}{11}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}The Biological Reading (Analogy, Not Identity)}{12}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Why the Analogy Is Useful}{12}{subsection.5.3}%
-\contentsline {section}{\numberline {6}A Control-Budget Formulation of Metabolic Escape}{13}{section.6}%
+\contentsline {section}{\numberline {4}Boundary Failure as Loss of Cross-Scale Observability}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Relational Identity and Organism-Level Control}{8}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}The Identity Collapse}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Distinction, Information, and Energetic Constraints}{9}{subsection.4.3}%
+\contentsline {section}{\numberline {5}A Structural Analogy to Recursive Self-Duplication}{10}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The Computational Pattern}{10}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}The Biological Reading (Analogy, Not Identity)}{10}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Why the Analogy Is Useful}{11}{subsection.5.3}%
+\contentsline {section}{\numberline {6}A Control-Budget Formulation of Metabolic Escape}{11}{section.6}%
 \contentsline {section}{\numberline {7}Temporal Coordination and Loss of Synchrony}{14}{section.7}%
 \contentsline {subsection}{\numberline {7.1}Circadian Disruption and Cancer}{14}{subsection.7.1}%
 \contentsline {subsection}{\numberline {7.2}Loss of Temporal Coordination as Boundary Failure}{14}{subsection.7.2}%
 \contentsline {subsection}{\numberline {7.3}Perineural Invasion Reinterpreted}{15}{subsection.7.3}%
 \contentsline {section}{\numberline {8}Immune Evasion as Loss of Distinguishability}{15}{section.8}%
 \contentsline {subsection}{\numberline {8.1}The PD-1/PD-L1 Checkpoint Axis}{15}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}Secondary Boundary Failures}{15}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.2}Secondary Boundary Failures}{16}{subsection.8.2}%
 \contentsline {subsection}{\numberline {8.3}Gap Junctions and Antigen Broadcast}{16}{subsection.8.3}%
 \contentsline {section}{\numberline {9}Thermodynamic Perspective: Cost Externalization}{16}{section.9}%
 \contentsline {subsection}{\numberline {9.1}The Warburg Effect as Metabolic Decoupling}{16}{subsection.9.1}%
@@ -39,15 +39,15 @@
 \contentsline {subsection}{\numberline {14.3}Gap Junction Expression}{23}{subsection.14.3}%
 \contentsline {subsection}{\numberline {14.4}Summary of Key Correlations}{24}{subsection.14.4}%
 \contentsline {subsection}{\numberline {14.5}Tumor vs.\ Matched Normal Tissue}{27}{subsection.14.5}%
-\contentsline {subsection}{\numberline {14.6}Active Masking vs.\ Temporal Decoherence Classification}{28}{subsection.14.6}%
-\contentsline {subsection}{\numberline {14.7}Survival Analysis}{29}{subsection.14.7}%
-\contentsline {subsection}{\numberline {14.8}Robustness to Clinical Covariates and Interaction Structure}{31}{subsection.14.8}%
-\contentsline {subsection}{\numberline {14.9}Stage-Stratified Analysis}{32}{subsection.14.9}%
-\contentsline {subsection}{\numberline {14.10}Implications for the Framework}{33}{subsection.14.10}%
-\contentsline {section}{\numberline {15}Simulation}{34}{section.15}%
-\contentsline {subsection}{\numberline {15.1}Update Rules}{34}{subsection.15.1}%
-\contentsline {subsection}{\numberline {15.2}What the Simulation Demonstrates}{34}{subsection.15.2}%
-\contentsline {section}{\numberline {16}Limitations}{40}{section.16}%
-\contentsline {section}{\numberline {17}Conclusion}{41}{section.17}%
-\contentsline {section}{\numberline {18}Future Research Directions}{42}{section.18}%
-\contentsline {section}{\numberline {A}Code Availability and Reproducibility Assets}{46}{appendix.A}%
+\contentsline {subsection}{\numberline {14.6}Active Masking vs.\ Temporal Decoherence Classification}{29}{subsection.14.6}%
+\contentsline {subsection}{\numberline {14.7}Survival Analysis}{32}{subsection.14.7}%
+\contentsline {subsection}{\numberline {14.8}Robustness to Clinical Covariates and Interaction Structure}{34}{subsection.14.8}%
+\contentsline {subsection}{\numberline {14.9}Stage-Stratified Analysis}{36}{subsection.14.9}%
+\contentsline {subsection}{\numberline {14.10}Implications for the Framework}{38}{subsection.14.10}%
+\contentsline {section}{\numberline {15}Simulation}{39}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Update Rules}{39}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}What the Simulation Demonstrates}{39}{subsection.15.2}%
+\contentsline {section}{\numberline {16}Limitations}{46}{section.16}%
+\contentsline {section}{\numberline {17}Conclusion}{47}{section.17}%
+\contentsline {section}{\numberline {18}Future Research Directions}{48}{section.18}%
+\contentsline {section}{\numberline {A}Code Availability and Reproducibility Assets}{53}{appendix.A}%
