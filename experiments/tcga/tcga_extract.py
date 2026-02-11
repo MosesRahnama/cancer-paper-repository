@@ -16,9 +16,13 @@ import pandas as pd
 from tcga_config import (
     DATA_DIR,
     GCS_PREFIX,
+    TCGA_DEFAULT_RELEASE_TAG,
     get_bq_client,
     get_gcs_bucket,
+    resolve_tcga_release_tag,
     safe_alias,
+    tcga_table,
+    write_extraction_manifest,
 )
 
 TARGET_GENES = [
@@ -66,7 +70,49 @@ def main():
         action="store_true",
         help="Skip upload to GCS and only write local CSV files.",
     )
+    parser.add_argument(
+        "--release-tag",
+        default=TCGA_DEFAULT_RELEASE_TAG,
+        help="TCGA table release tag (default pinned): rNN or current.",
+    )
+    parser.add_argument(
+        "--allow-current",
+        action="store_true",
+        help="Allow non-deterministic *_current table extraction (explicit opt-in).",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Write extraction manifest only; do not query BigQuery.",
+    )
     args = parser.parse_args()
+
+    release_tag = resolve_tcga_release_tag(
+        release_tag=args.release_tag,
+        allow_current=args.allow_current,
+    )
+    expression_table = tcga_table(
+        "RNAseq_hg38_gdc",
+        release_tag=release_tag,
+        allow_current=args.allow_current,
+    )
+
+    os.makedirs(args.output_dir, exist_ok=True)
+    manifest_path = os.path.join(args.output_dir, "tcga_extract_manifest.json")
+    write_extraction_manifest(
+        output_path=manifest_path,
+        script_name="tcga_extract.py",
+        release_tag=release_tag,
+        tables={"expression": expression_table},
+        projects=TARGET_PROJECTS,
+        target_genes=TARGET_GENES,
+    )
+    print(f"Resolved TCGA release tag: {release_tag}")
+    print(f"Expression table: {expression_table}")
+    print(f"Wrote manifest: {manifest_path}")
+    if args.dry_run:
+        print("Dry-run complete. No BigQuery queries were executed.")
+        return
 
     bq_client = get_bq_client()
     bucket = None
@@ -93,7 +139,7 @@ def main():
         f"MAX(IF(gene_name = '{g}', tpm_unstranded, NULL)) AS `{safe_alias(g)}`"
         for g in TARGET_GENES
       )}
-    FROM `isb-cgc-bq.TCGA.RNAseq_hg38_gdc_current`
+    FROM `{expression_table}`
     WHERE project_short_name IN ({project_list_sql})
       AND gene_name IN ({gene_list_sql})
     GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
@@ -116,7 +162,7 @@ def main():
         f"MAX(IF(gene_name = '{g}', unstranded, NULL)) AS `{safe_alias(g)}_counts`"
         for g in TARGET_GENES
       )}
-    FROM `isb-cgc-bq.TCGA.RNAseq_hg38_gdc_current`
+    FROM `{expression_table}`
     WHERE project_short_name IN ({project_list_sql})
       AND gene_name IN ({gene_list_sql})
     GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name

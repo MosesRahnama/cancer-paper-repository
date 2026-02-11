@@ -318,14 +318,15 @@ def plot_immune_subtype_prevalence() -> Path:
     ax.bar(x, pct_mx, bottom=pct_am + pct_dc, color="#7570b3", label="Mixed")
 
     for i, n_total in enumerate(df["n_total"].astype(int)):
-        ax.text(i, 102.0, f"n={n_total}", ha="center", va="bottom", fontsize=9)
+        ax.text(i, 103.0, f"n={n_total}", ha="center", va="bottom", fontsize=9)
 
     ax.set_xticks(x)
     ax.set_xticklabels([PROJECT_LABELS[p] for p in df["project"]])
     ax.set_ylabel("Subtype prevalence (%)")
-    ax.set_ylim(0, 108)
+    ax.set_ylim(0, 115)
     ax.set_title("Boundary-Failure Subtype Composition by Cancer Type")
-    ax.legend(frameon=False, loc="upper right")
+    ax.legend(frameon=True, loc="upper left", fontsize=9,
+              bbox_to_anchor=(0.0, 1.0), edgecolor="gray", fancybox=False)
     ax.grid(axis="y", alpha=0.2)
     fig.tight_layout()
 

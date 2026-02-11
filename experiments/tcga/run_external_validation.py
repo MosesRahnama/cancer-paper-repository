@@ -29,6 +29,27 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
 RESULTS_DIR = os.path.join(REPO_ROOT, "results")
 CACHE_DIR = os.path.join(SCRIPT_DIR, "geo_cache")
+TARGET_EXPR_PATH = os.path.join(CACHE_DIR, "gse91061_target_expression.csv")
+TARGET_META_PATH = os.path.join(CACHE_DIR, "gse91061_sample_meta.csv")
+
+
+def ensure_cache_files():
+    """Ensure required GEO cache files exist; rebuild if missing."""
+    missing = [p for p in [TARGET_EXPR_PATH, TARGET_META_PATH] if not os.path.exists(p)]
+    if not missing:
+        return
+
+    print("Missing GEO cache files detected; attempting to rebuild cache.")
+    from external_validation_geo import prepare_gse91061_cache
+
+    prepare_gse91061_cache(force_refresh=False, allow_download=True)
+
+    still_missing = [p for p in [TARGET_EXPR_PATH, TARGET_META_PATH] if not os.path.exists(p)]
+    if still_missing:
+        raise FileNotFoundError(
+            "Could not prepare required GEO cache files: "
+            + ", ".join(still_missing)
+        )
 
 
 def main():
@@ -36,9 +57,19 @@ def main():
     print("  External Validation: GSE91061 (Nivolumab Melanoma)")
     print("=" * 65)
 
-    # Load expression and metadata (both committed to repo; no downloads needed)
-    expr = pd.read_csv(os.path.join(CACHE_DIR, "gse91061_target_expression.csv"), index_col=0)
-    meta = pd.read_csv(os.path.join(CACHE_DIR, "gse91061_sample_meta.csv"), index_col=0)
+    ensure_cache_files()
+
+    # Load expression and metadata (committed by default; rebuilt when missing)
+    expr = pd.read_csv(TARGET_EXPR_PATH, index_col=0)
+    meta = pd.read_csv(TARGET_META_PATH, index_col=0)
+
+    required_meta_cols = {"response", "timepoint", "patient"}
+    missing_meta_cols = [c for c in required_meta_cols if c not in meta.columns]
+    if missing_meta_cols:
+        raise ValueError(
+            "Missing expected columns in gse91061_sample_meta.csv: "
+            + ", ".join(missing_meta_cols)
+        )
 
     # Response annotations are now embedded in the committed sample_meta CSV.
     # No XML parsing needed; the CSV was enriched from the GEO XML during

@@ -1,7 +1,10 @@
 """
 Shared configuration and utilities for TCGA boundary-logic analysis.
 """
+import json
 import os
+import re
+from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 
@@ -17,6 +20,11 @@ CREDENTIALS_PATH = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", _DEFAULT_CRE
 PROJECT_ID = "kernel-o6"
 GCS_BUCKET = "kernel-o6"
 GCS_PREFIX = "tcga_cancer_boundary"
+
+# BigQuery table versioning:
+# Default to a pinned release for deterministic extraction.
+TCGA_DEFAULT_RELEASE_TAG = os.environ.get("TCGA_RELEASE_TAG", "r35")
+TCGA_ALLOW_CURRENT = os.environ.get("TCGA_ALLOW_CURRENT", "0") == "1"
 
 # Data and figure directories relative to this script's location
 DATA_DIR = _CONFIG_DIR  # Same directory as the scripts
@@ -60,11 +68,62 @@ PROJECT_LABELS = {
     "TCGA-LUSC": "Lung Squam.",
 }
 
+_RELEASE_TAG_PATTERN = re.compile(r"^(r\d+|current)$", re.IGNORECASE)
+
 
 # ── Utility Functions ──────────────────────────────────────────────────────
 def safe_alias(gene_name):
     """Convert gene name to valid SQL/column alias."""
     return gene_name.replace("-", "_")
+
+
+def resolve_tcga_release_tag(release_tag=None, allow_current=False):
+    """
+    Resolve and validate the TCGA table release tag.
+
+    Accepted values:
+      - rNN style tags (e.g., r35)
+      - current (only when explicitly allowed)
+    """
+    tag = (release_tag or TCGA_DEFAULT_RELEASE_TAG).strip().lower()
+    if not _RELEASE_TAG_PATTERN.match(tag):
+        raise ValueError(
+            f"Invalid TCGA release tag '{tag}'. Use rNN (e.g., r35) or 'current'."
+        )
+    if tag == "current" and not (allow_current or TCGA_ALLOW_CURRENT):
+        raise ValueError(
+            "Refusing non-deterministic extraction from *_current tables. "
+            "Use --allow-current (or set TCGA_ALLOW_CURRENT=1) to override intentionally."
+        )
+    return tag
+
+
+def tcga_table(table_base, release_tag=None, allow_current=False):
+    """Return fully-qualified TCGA BigQuery table ID for a resolved release tag."""
+    tag = resolve_tcga_release_tag(release_tag=release_tag, allow_current=allow_current)
+    return f"isb-cgc-bq.TCGA.{table_base}_{tag}"
+
+
+def write_extraction_manifest(
+    output_path,
+    script_name,
+    release_tag,
+    tables,
+    projects,
+    target_genes,
+):
+    """Write extraction provenance manifest for reproducibility auditing."""
+    payload = {
+        "script": script_name,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "tcga_release_tag": release_tag,
+        "tables": tables,
+        "projects": projects,
+        "target_genes": target_genes,
+    }
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, sort_keys=True)
+    return output_path
 
 
 def log_transform(series):

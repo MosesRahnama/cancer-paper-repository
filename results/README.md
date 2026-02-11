@@ -76,7 +76,7 @@ python sensitivity_threshold_sweep.py
 python sensitivity_rmst.py
 python sensitivity_immune_residualization.py
 python composite_observability_index.py
-python run_external_validation.py
+python run_external_validation.py            # auto-prepares GEO cache if missing
 
 # Sync and provenance:
 python sync_manuscript_artifacts.py --rewrite-tex

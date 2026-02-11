@@ -29,4 +29,9 @@ experiments/tcga/geo_cache/*.xml
 
 # GCP credentials (never commit)
 infra/secrets/
+
+# Local extraction manifests (run metadata; regenerated each extraction)
+experiments/tcga/tcga_extract_manifest.json
+experiments/tcga/tcga_extract_expanded_manifest.json
+CHECKER_CHECKLIST.md
 CONSISTENCY_REPORT.md

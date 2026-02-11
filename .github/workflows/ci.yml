@@ -22,6 +22,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
+          pip install -r requirements-tcga.txt
 
       - name: Run tests
         working-directory: .
@@ -33,3 +34,11 @@ jobs:
           python -m py_compile run_simulation.py
           python -m py_compile run_phase2_extractions.py
           python -m py_compile examples/run_full_scenario.py
+          python -m py_compile experiments/tcga/ci_validate_committed_outputs.py
+          python -m py_compile experiments/tcga/tcga_extract.py
+          python -m py_compile experiments/tcga/tcga_extract_expanded.py
+
+      - name: TCGA reproducibility validation (committed artifacts)
+        working-directory: .
+        run: |
+          python experiments/tcga/ci_validate_committed_outputs.py

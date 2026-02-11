@@ -35,7 +35,11 @@ You need access to the ISB-CGC BigQuery datasets. This requires:
 
 **Required packages:**
 ```bash
-pip install google-cloud-bigquery google-cloud-storage pandas numpy scipy matplotlib seaborn
+# From repo root (recommended deterministic setup):
+pip install -r requirements-tcga.txt
+
+# Or install manually:
+pip install google-cloud-bigquery google-cloud-storage pandas numpy scipy matplotlib seaborn GEOparse
 ```
 
 **Tested versions:**
@@ -50,9 +54,12 @@ pip install google-cloud-bigquery google-cloud-storage pandas numpy scipy matplo
 
 All data is extracted from **ISB-CGC BigQuery public datasets** hosted at `isb-cgc-bq.TCGA.*`:
 
-1. **RNAseq_hg38_gdc_current**: RNA-seq expression data (TPM values) for 21 target genes
-2. **clinical_gdc_current**: Patient demographics and vital status
-3. **clinical_diagnosis_gdc_current**: Tumor staging and diagnosis details
+1. **RNAseq_hg38_gdc_<release>**: RNA-seq expression data (TPM values) for 21 target genes
+2. **clinical_gdc_<release>**: Patient demographics and vital status
+3. **clinical_diagnosis_gdc_<release>**: Tumor staging and diagnosis details
+
+By default, extraction is version-locked to release `r35` for deterministic reruns.
+Using `*_current` requires explicit opt-in (`--release-tag current --allow-current`).
 
 ### Target Genes (n=21)
 
@@ -80,7 +87,7 @@ All data is extracted from **ISB-CGC BigQuery public datasets** hosted at `isb-c
 | TCGA-BRCA   | Breast Invasive Carcinoma        | 1113          | 113            |
 | TCGA-COAD   | Colon Adenocarcinoma             | 473           | 41             |
 | TCGA-HNSC   | Head and Neck Squamous Cell      | 522           | 44             |
-| TCGA-LUSC   | Lung Squamous Cell Carcinoma     | 503           | 51             |
+| TCGA-LUSC   | Lung Squamous Cell Carcinoma     | 501           | 51             |
 | **Total**   |                                  | **3611**      | **309**        |
 
 ## Pipeline Execution
@@ -91,7 +98,10 @@ All data is extracted from **ISB-CGC BigQuery public datasets** hosted at `isb-c
 cd experiments/tcga
 
 # 1. Extract data from BigQuery (~5 minutes)
-python tcga_extract_expanded.py
+python tcga_extract_expanded.py  # default pinned release: r35
+
+# Optional non-deterministic upstream refresh (explicit opt-in)
+# python tcga_extract_expanded.py --release-tag current --allow-current
 
 # 2. Run all core analyses (each ~1-2 minutes)
 python tcga_multicancer.py         # Multi-cancer correlation validation
@@ -100,11 +110,24 @@ python tcga_immune_subtype.py      # Active Masking vs Decoherence classificatio
 python tcga_survival.py            # Kaplan-Meier survival analysis
 python tcga_stage_analysis.py      # Stage-stratified analysis + FDR correction
 
-# 3. OPTIONAL: Run robustness checks with covariate control (for peer review)
-# Requires optional covariate file (see script #8 documentation)
+# 3. Robustness checks with covariate control
+# Uses committed tcga_purity_immune_covariates.csv (Thorsson-derived)
 python robustness_check.py         # Multivariable Cox models with stage + microenvironment controls
 
-# 4. Sync manuscript artifacts + emit provenance manifest
+# 4. Sensitivity analyses
+python sensitivity_threshold_sweep.py
+python sensitivity_rmst.py
+python sensitivity_immune_residualization.py
+python composite_observability_index.py
+
+# 5. External validation (uses committed processed GEO cache by default)
+python run_external_validation.py
+
+# Optional: refresh raw GEO cache, then re-run external validation
+python external_validation_geo.py --refresh
+python run_external_validation.py
+
+# 6. Sync manuscript artifacts + emit provenance manifest
 python sync_manuscript_artifacts.py --rewrite-tex
 
 # All results saved to current directory + figures/ subdirectory
@@ -134,13 +157,15 @@ python sync_manuscript_artifacts.py --rewrite-tex
 **Outputs**:
 - `tcga_expanded_tpm.csv` (3,920 samples × 25 columns: metadata + 21 genes)
 - `tcga_clinical.csv` (3,646 patients × 12 columns: demographics, vital status, staging)
+- `tcga_extract_expanded_manifest.json` (release tag + table IDs + project/gene provenance)
 
 **What it does:**
-1. Queries `TCGA.RNAseq_hg38_gdc_current` for 6 cancer types
-2. Pivots from long format (gene × sample rows) to wide format (sample rows, gene columns)
-3. Queries `TCGA.clinical_gdc_current` + `TCGA.clinical_diagnosis_gdc_current` for survival and staging
+1. Resolves versioned table IDs from `--release-tag` (default: `r35`)
+2. Queries `TCGA.RNAseq_hg38_gdc_<release>` for 6 cancer types
+3. Queries `TCGA.clinical_gdc_<release>` + `TCGA.clinical_diagnosis_gdc_<release>` for survival and staging
 4. Deduplicates clinical records (keeps first diagnosis per patient)
-5. Uploads to GCS bucket (optional, if configured)
+5. Writes extraction manifest for reproducibility audit
+6. Uploads to GCS bucket (optional, if configured)
 
 **Key BigQuery query pattern:**
 ```sql
@@ -152,11 +177,13 @@ SELECT
   MAX(IF(gene_name = 'CD274', tpm_unstranded, NULL)) AS CD274,
   MAX(IF(gene_name = 'ARNTL', tpm_unstranded, NULL)) AS ARNTL,
   ...
-FROM `isb-cgc-bq.TCGA.RNAseq_hg38_gdc_current`
+FROM `isb-cgc-bq.TCGA.RNAseq_hg38_gdc_r35`
 WHERE project_short_name IN ('TCGA-SKCM', 'TCGA-LUAD', ...)
   AND gene_name IN ('CD274', 'ARNTL', 'PER1', ...)
 GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 ```
+
+**Deterministic behavior:** `current` is rejected unless explicitly enabled with `--allow-current`.
 
 **Run this first** before any analysis scripts.
 
@@ -271,7 +298,7 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 3. **Collects ALL p-values** from multicancer, tumor-normal, immune subtype, and survival analyses
 4. Applies comprehensive **Benjamini-Hochberg FDR correction** to the full set of tests
 
-**Key finding**: Circadian CV has no FDR-significant association with stage in any cohort; boundary mode appears early and is maintained through progression. (Some non-circadian markers show modest stage associations.)
+**Key finding**: Circadian CV is largely stage-stable (5/6 cohorts non-significant after global FDR), with one near-threshold HNSC Spearman signal (q=0.04998, small effect size). This pattern remains most consistent with early establishment and persistence of boundary mode. (Some non-circadian markers show modest stage associations.)
 
 ---
 
@@ -281,7 +308,7 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 **Inputs**:
 - `tcga_expanded_tpm.csv` (required)
 - `tcga_clinical.csv` (required)
-- `tcga_purity_immune_covariates.csv` (OPTIONAL - see below)
+- `tcga_purity_immune_covariates.csv` (committed default; optional custom override, see below)
 
 **Outputs**:
 - `robustness_cox_coefficients.csv` (covariate-level Cox coefficients, HRs, CIs, p-values)
@@ -292,7 +319,7 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 **What it does:**
 1. Runs multivariable Cox proportional hazards models for Active Masking vs Decoherence survival
 2. Controls for tumor stage (categorical: I/II/III/IV/missing)
-3. Optionally controls for purity and microenvironment covariates if provided
+3. Controls for purity and microenvironment covariates using committed `tcga_purity_immune_covariates.csv` when present (or a compatible custom override)
 4. Tests proportional hazards assumption via covariate × log(time) interaction screens
 5. Tests continuous PD-L1 × circadian clock interaction models
 6. Runs a sensitivity model adding continuous PD-L1 + B2M to test boundary mode beyond class components
@@ -300,12 +327,12 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 
 **Interpretation note:** PH interaction screens in current outputs indicate broad non-proportionality across several covariates. Treat Cox hazard ratios as time-averaged associations unless followed by explicit time-varying or stratified survival models.
 
-**Optional Covariate File (Purity/Microenvironment):**
+**Covariate File (Purity/Microenvironment):**
 
-This script can optionally incorporate tumor purity and microenvironment estimates as covariates. To use this feature, create a CSV file with the following structure:
+This script uses tumor purity and microenvironment estimates as covariates. The file `tcga_purity_immune_covariates.csv` is **committed to this repository** (derived from Thorsson et al. 2018) and is the default path used for manuscript-grade runs. If you need to regenerate it or use a different source, the script accepts any CSV matching the following structure:
 
-**File name** (one of these, checked in order):
-- `tcga_purity_immune_covariates.csv` (recommended)
+**File name** (checked in order):
+- `tcga_purity_immune_covariates.csv` (committed, recommended)
 - `tcga_purity_covariates.csv`
 - `tcga_purity.csv`
 
@@ -328,10 +355,10 @@ This script can optionally incorporate tumor purity and microenvironment estimat
 - **xCell/CIBERSORT**: Cell-type deconvolution tools for immune infiltration estimates
 - **Pre-computed TCGA estimates**: Available from Thorsson et al. 2018 Immunity paper (PanCancer immune landscape)
 
-**Note**: If no covariate file is found, the script runs without optional controls (stage-only adjustment). This is **acceptable** because:
+**Note**: The committed `tcga_purity_immune_covariates.csv` file is the default and recommended source. If no covariate file is found (e.g., after a clean checkout without LFS), the script falls back to stage-only adjustment, which is acceptable because:
 1. Our primary results (circadian CV vs PD-L1 correlation, Active Masking subtype definition) do not depend on survival modeling
 2. Stage-adjusted Cox models provide an initial clinical-covariate check
-3. Optional purity/microenvironment controls are a sensitivity check, not a primary requirement
+3. Purity/microenvironment controls are a sensitivity check, not a primary requirement
 
 **When to run this script:**
 - For manuscript peer review requiring multivariable survival models
@@ -340,7 +367,7 @@ This script can optionally incorporate tumor purity and microenvironment estimat
 
 **When NOT to run this script:**
 - For initial exploratory analysis (use `tcga_survival.py` instead - faster, simpler)
-- If you don't have covariate data and reviewers haven't requested it
+- If you intentionally want a quick stage-only pass without covariate sensitivity
 - For paper figures (main figures come from `tcga_survival.py`)
 
 ---
@@ -428,25 +455,29 @@ This script can optionally incorporate tumor purity and microenvironment estimat
 
 #### 13. **run_external_validation.py**
 **Type**: External cohort replication (non-TCGA)
-**Runtime**: ~10 seconds (after data download)
-**Inputs**: Pre-downloaded GEO data in `geo_cache/` (see below)
+**Runtime**: ~10 seconds (using committed processed GEO cache files)
+**Inputs**: `geo_cache/gse91061_target_expression.csv` and `geo_cache/gse91061_sample_meta.csv`
 **Outputs**:
 - `external_validation_results.csv` (replication statistics)
 - `results/external_validation_geo.png` (3-panel: CV vs PD-L1, response by subtype, CV by response)
 
-**Data acquisition (prerequisite):**
-The script `external_validation_geo.py` downloads the raw data from GEO:
+**Data acquisition / cache prep:**
+By default, the required processed cache files are committed for reproducibility.
+If cache files are missing or stale, run:
 ```bash
-python external_validation_geo.py  # Downloads GSE91061 FPKM matrix + metadata
-python run_external_validation.py   # Runs the validation analysis
+python external_validation_geo.py            # Validate/build cache from local raw files
+python external_validation_geo.py --refresh  # Re-download raw GEO assets + rebuild cache
+python run_external_validation.py            # Run external validation analysis
 ```
-This creates `geo_cache/` containing:
-- `GSE91061_fpkm.csv.gz` (16 MB, FPKM expression matrix, 22,187 genes x 109 samples)
+`external_validation_geo.py` prepares/validates:
 - `GSE91061_family.xml` (sample metadata with response annotations)
 - `gse91061_target_expression.csv` (extracted 15 target genes x 109 samples)
 - `gse91061_sample_meta.csv` (patient/timepoint parsed from column names)
 
-**Note**: `geo_cache/` is `.gitignore`d. Raw GEO downloads must be regenerated by running `external_validation_geo.py`.
+It may also cache raw GEO assets (ignored by git), such as:
+- `GSE91061_fpkm.csv.gz`
+- `GSE91061_family.xml.tgz`
+- `GSE91061_family.xml`
 
 **What it does:**
 1. Loads pre-treatment melanoma samples from GSE91061 (Riaz et al. 2017, nivolumab)
@@ -469,6 +500,13 @@ These scripts were used during development to discover the BigQuery schema. **No
 - **tcga_clinical_discover3.py**: Inspects diagnosis and follow-up schemas with sample rows
 - **tcga_schema.py**: General schema exploration utility
 
+Additional non-discovery utilities used in the manuscript pipeline:
+- **generate_manuscript_figures.py**: Builds summary manuscript figures from CSV outputs
+- **convert_thorsson_to_covariates.py**: Normalizes immune covariate columns
+- **sync_manuscript_artifacts.py**: Syncs `results/` artifacts and emits provenance CSV
+- **tcga_extract.py**: Legacy two-cohort extractor (retained for backwards compatibility)
+- **ci_validate_committed_outputs.py**: CI checker for committed TCGA artifacts and extraction version-lock behavior
+
 You can ignore these unless you want to understand how the BigQuery schema was discovered.
 
 ---
@@ -490,7 +528,7 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 | `stage_analysis_results.csv` | 48 | 6 | Stage-trend and stage-group tests across markers/cancers |
 | `survival_logrank_results.csv` | 12 | 10 | Log-rank tests with within-family and global FDR columns |
 | `master_fdr_results.csv` | 244 | 9 | Comprehensive FDR-corrected p-values across all analyses |
-| `tcga_purity_immune_covariates.csv` | varies | 3-10 | **OPTIONAL**: Tumor purity and microenvironment estimates for robustness checks (user-provided; see script #8 documentation for accepted columns) |
+| `tcga_purity_immune_covariates.csv` | 3,590 | 10 | Tumor purity + immune microenvironment covariates (Thorsson-derived, committed) |
 | `robustness_cox_coefficients.csv` | varies | 13 | Multivariable Cox coefficients (HR, CI, p-value per covariate) |
 | `robustness_primary_tests.csv` | varies | varies | Primary robustness tests with BH correction and PH-screen caution columns |
 | `robustness_ph_diagnostics.csv` | varies | varies | Proportional hazards interaction diagnostics (generated by `robustness_check.py`) |
@@ -518,7 +556,7 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 | `survival_circadian_quartile.png` | KM curves | Survival stratified by circadian CV quartiles |
 | `survival_boundary_failure.png` | KM curves | Survival stratified by Active Masking vs Decoherence |
 | `stage_circadian_cv_boxplot.png` | Boxplot | Circadian CV by tumor stage (I/II/III/IV) |
-| `control_budget_pareto_frontier.png` | Scatter | Pareto frontier overlay for budget-escape test (generated alongside `control_budget_combined.png` by `test_control_budget.py`) |
+| `control_budget_combined.png` | Composite | Budget-escape empirical test figure (`test_control_budget.py`) |
 
 **Sensitivity analysis figures** (generated by scripts 9-13, written to `results/`):
 
@@ -561,9 +599,11 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 ### Reproducing Exact Results
 
 All random seeds are fixed where applicable. However, note:
-- BigQuery table `*_current` datasets are **periodically updated** by ISB-CGC
-- To ensure exact reproducibility, you can use versioned tables (e.g., `*_r35` for release 35) instead of `*_current`
-- Current results based on data accessed: **February 2026**
+- Extraction scripts are now **release-locked by default** to `r35`
+- `*_current` datasets are periodically updated by ISB-CGC and are blocked unless explicitly enabled:
+  - `python tcga_extract_expanded.py --release-tag current --allow-current`
+- Every extraction run writes a manifest (`tcga_extract_expanded_manifest.json` / `tcga_extract_manifest.json`) recording release tag and exact table IDs
+- Current committed results are based on data accessed: **February 2026**
 
 ### Active Masking Interpretation
 

@@ -24,13 +24,13 @@ A complete reproducible research package for the boundary logic failure theory o
 
 | Finding | Evidence | Location |
 |---------|----------|----------|
-| Circadian CV–PD-L1 negative coupling | 6/6 TCGA cohorts, all FDR q < 0.05 (ρ: −0.125 to −0.381) | Section 10.1 |
-| External replication | 7th cohort (GSE91061 nivolumab melanoma): ρ = −0.283, p = 0.049 | Section 10.9 |
-| "Locked, not broken" clock | Tumors show lower circadian CV than matched normals in 4/5 cancer types | Section 10.4 |
-| Active Masking vs Decoherence survival | SKCM: log-rank p = 0.0011, BH q = 0.0132; RMST +24 months at 10 years | Section 10.6 |
-| Threshold robustness | SKCM signal significant at 9/11 percentile thresholds (25th–65th) | Section 10.6 |
-| Stromal confound survived | Residual CV–PD-L1 significant in 4/4 cohorts after immune residualization | Section 10.8 |
-| Independent observability index | Separates AM from DC at p < 10⁻¹⁰ using orthogonal features | Section 10.9 |
+| Circadian CV–PD-L1 negative coupling | 6/6 TCGA cohorts, all FDR q < 0.05 (ρ: −0.125 to −0.381) | Section 14.1 |
+| External replication | 7th cohort (GSE91061 nivolumab melanoma): ρ = −0.283, p = 0.049 | Section 14.12 |
+| "Locked, not broken" clock | Tumors show lower circadian CV than matched normals in 4/5 cancer types | Section 14.5 |
+| Active Masking vs Decoherence survival | SKCM: log-rank p = 0.0011, BH q = 0.0132; RMST +24 months at 10 years | Sections 14.7-14.8 |
+| Threshold robustness | SKCM signal significant at 9/11 percentile thresholds (25th–65th) | Section 14.7 (Threshold sensitivity paragraph) |
+| Stromal confound survived | Residual CV–PD-L1 significant in 4/4 cohorts after immune residualization | Section 14.10 |
+| Independent observability index | Separates AM from DC at p < 10⁻¹⁰ using orthogonal features | Section 14.11 |
 | Budget Escape (not trade-off) | Positive proliferation–coherence correlation in 5/6 cancer types | Section 6 |
 
 ---
@@ -45,7 +45,7 @@ cancer-paper-repository/
       evidence_table_prespecified.tex      # Pre-specified endpoint audit table
 
   experiments/tcga/
-    README.md                              # Detailed pipeline documentation (15 scripts)
+    README.md                              # Detailed pipeline documentation (13 primary scripts + utilities)
     tcga_config.py                         # Shared configuration and utility functions
 
     # --- Data Extraction (requires GCP BigQuery) ---
@@ -68,7 +68,8 @@ cancer-paper-repository/
     sensitivity_immune_residualization.py   # Stromal confound: residualization + purity strata
     composite_observability_index.py       # Independent observability metric
     run_external_validation.py             # GSE91061 nivolumab melanoma validation
-    external_validation_geo.py             # GEO data download utility
+    external_validation_geo.py             # GEO cache prep/refresh utility
+    ci_validate_committed_outputs.py       # CI checker for committed TCGA artifacts + version lock behavior
 
     # --- Manuscript Figure Generation ---
     generate_manuscript_figures.py         # Summary figures from CSV outputs
@@ -121,11 +122,12 @@ cancer-paper-repository/
 
   pyproject.toml                           # Package metadata and build config
   requirements.txt                         # Python dependencies
+  requirements-tcga.txt                    # TCGA/validation pipeline dependencies
   requirements-dev.txt                     # Dev/test dependencies
   CITATION.cff                             # Citation metadata
   CONTRIBUTING.md                          # Contribution protocol
   LICENSE                                  # Non-commercial research license
-  .github/workflows/ci.yml                # CI pipeline (lint + tests)
+  .github/workflows/ci.yml                # CI pipeline (tests + TCGA reproducibility checks)
 ```
 
 ---
@@ -138,11 +140,13 @@ cancer-paper-repository/
 # 1. Setup
 python -m venv .venv && .venv\Scripts\Activate.ps1  # Windows
 pip install -e ".[dev]"
-pip install google-cloud-bigquery google-cloud-storage GEOparse
+pip install -r requirements-tcga.txt
 
 # 2. TCGA data extraction (requires GCP BigQuery credentials)
 cd experiments/tcga
-python tcga_extract_expanded.py
+python tcga_extract_expanded.py  # default pinned release: r35
+# Optional non-deterministic upstream refresh:
+# python tcga_extract_expanded.py --release-tag current --allow-current
 
 # 3. Core analyses
 python tcga_multicancer.py
@@ -158,8 +162,11 @@ python sensitivity_rmst.py
 python sensitivity_immune_residualization.py
 python composite_observability_index.py
 
-# 5. External validation (downloads from GEO, no GCP needed)
-python external_validation_geo.py
+# 5. External validation (no GCP needed)
+python run_external_validation.py
+
+# Optional: refresh GEO cache from upstream raw files, then re-run validation
+python external_validation_geo.py --refresh
 python run_external_validation.py
 
 # 6. Manuscript figures
@@ -192,8 +199,8 @@ Steps 2 (BigQuery extraction) and 5 (GEO download) are provided for full provena
 | TCGA RNA-seq (21 genes × 6 cancer types) | `tcga_expanded_tpm.csv` | 3,920 | ISB-CGC BigQuery | No (committed) |
 | TCGA clinical (survival, staging) | `tcga_clinical.csv` | 3,646 | ISB-CGC BigQuery | No (committed) |
 | Immune landscape covariates | `tcga_purity_immune_covariates.csv` | 3,590 | Thorsson et al. 2018 | No (committed) |
-| External validation expression | `geo_cache/gse91061_target_expression.csv` | 109 | GEO GSE91061 | No (committed) |
-| External validation metadata | `geo_cache/gse91061_sample_meta.csv` | 109 | GEO GSE91061 | No (committed) |
+| External validation expression | `experiments/tcga/geo_cache/gse91061_target_expression.csv` | 109 | GEO GSE91061 | No (committed) |
+| External validation metadata | `experiments/tcga/geo_cache/gse91061_sample_meta.csv` | 109 | GEO GSE91061 | No (committed) |
 
 ---
 
@@ -232,11 +239,10 @@ Four therapeutic operators implement the "forced distinction" design principle:
 
 ---
 
-## Consistency and Audit Trail
+## Audit Trail
 
-- [`CONSISTENCY_REPORT.md`](CONSISTENCY_REPORT.md): tracks all data–text–figure cross-checks, resolved discrepancies, and FDR scope decisions
 - [`paper/figure_provenance.csv`](paper/figure_provenance.csv): SHA-256 hashes and generator scripts for every manuscript figure
-- [`experiments/tcga/README.md`](experiments/tcga/README.md): detailed documentation for all 15 analysis scripts with inputs, outputs, and key findings
+- [`experiments/tcga/README.md`](experiments/tcga/README.md): detailed documentation for primary analysis scripts and utilities with inputs, outputs, and key findings
 
 ---
 
