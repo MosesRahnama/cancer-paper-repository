@@ -254,3 +254,7 @@ These are not “errors” but important constraints on interpretation and repro
 | Code refactoring | ✅ Improved since last review |
 
 **Action required:** none (blocking consistency issues resolved).
+
+---
+
+*Previous review (2026-02-10) identified 5 "reduced investment" passages; all were corrected before the 2026-02-11 audit. The stale Feb 10 report has been removed from this document to avoid confusion.*

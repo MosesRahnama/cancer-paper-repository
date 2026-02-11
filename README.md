@@ -109,6 +109,7 @@ cancer-paper-repository/
     run_full_scenario.py                   # Multi-therapy comparison scenario
 
   tests/
+    conftest.py                            # Pytest fixtures (sys.path setup)
     test_core_dynamics.py                  # Core transition checks
     test_therapy.py                        # Therapy operator checks + growth arrest
     test_parameter_profiles.py             # Parameter conversion validation
@@ -118,10 +119,13 @@ cancer-paper-repository/
     *.png                                  # 29 figures referenced by the manuscript
     *.json                                 # Simulation scenario outputs
 
-  CONSISTENCY_REPORT.md                    # Internal consistency audit trail
+  pyproject.toml                           # Package metadata and build config
+  requirements.txt                         # Python dependencies
+  requirements-dev.txt                     # Dev/test dependencies
   CITATION.cff                             # Citation metadata
   CONTRIBUTING.md                          # Contribution protocol
   LICENSE                                  # Non-commercial research license
+  .github/workflows/ci.yml                # CI pipeline (lint + tests)
 ```
 
 ---
@@ -171,20 +175,25 @@ python run_phase2_extractions.py
 pytest
 ```
 
-### Without GCP (using committed CSV data)
+### Without GCP (using committed data — recommended for referees)
 
-Steps 4–8 above work without GCP credentials because the extracted CSV files are committed to the repository. Steps 2–3 require BigQuery access to ISB-CGC public datasets.
+**All extracted data is committed to the repository.** No GCP account, BigQuery access, or internet connection is required to reproduce any analysis. The CSV files in `experiments/tcga/` contain the complete extracted datasets. Steps 3–8 above run directly on these committed files.
+
+Steps 2 (BigQuery extraction) and 5 (GEO download) are provided for full provenance transparency — they show exactly how the raw data was obtained — but their outputs are already committed, so re-running them is optional.
 
 ---
 
-## Data Sources
+## Data Availability
 
-| Source | Access | Used For |
-|--------|--------|----------|
-| ISB-CGC BigQuery (`isb-cgc-bq.TCGA.*`) | Public (GCP account required) | RNA-seq expression (21 genes × 6 cancer types) |
-| TCGA clinical tables | Public (GCP account required) | Survival, staging, demographics |
-| Thorsson et al. 2018 (*Immunity*) | Pre-computed, committed as CSV | Immune landscape covariates (purity, infiltration) |
-| GEO GSE91061 (Riaz et al. 2017) | Public (internet required) | External validation (nivolumab melanoma) |
+**All data required to reproduce every result in this manuscript is included in the repository.**
+
+| Dataset | File(s) | Rows | Source | Re-extraction needed? |
+|---------|---------|------|--------|----------------------|
+| TCGA RNA-seq (21 genes × 6 cancer types) | `tcga_expanded_tpm.csv` | 3,920 | ISB-CGC BigQuery | No (committed) |
+| TCGA clinical (survival, staging) | `tcga_clinical.csv` | 3,646 | ISB-CGC BigQuery | No (committed) |
+| Immune landscape covariates | `tcga_purity_immune_covariates.csv` | 3,590 | Thorsson et al. 2018 | No (committed) |
+| External validation expression | `geo_cache/gse91061_target_expression.csv` | 109 | GEO GSE91061 | No (committed) |
+| External validation metadata | `geo_cache/gse91061_sample_meta.csv` | 109 | GEO GSE91061 | No (committed) |
 
 ---
 

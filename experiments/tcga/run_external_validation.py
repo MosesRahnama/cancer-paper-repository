@@ -13,7 +13,6 @@ from __future__ import annotations
 import os
 import sys
 import warnings
-import xml.etree.ElementTree as ET
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -37,25 +36,14 @@ def main():
     print("  External Validation: GSE91061 (Nivolumab Melanoma)")
     print("=" * 65)
 
-    # Load expression
+    # Load expression and metadata (both committed to repo; no downloads needed)
     expr = pd.read_csv(os.path.join(CACHE_DIR, "gse91061_target_expression.csv"), index_col=0)
     meta = pd.read_csv(os.path.join(CACHE_DIR, "gse91061_sample_meta.csv"), index_col=0)
 
-    # Load response from XML
-    ns = {"geo": "http://www.ncbi.nlm.nih.gov/geo/info/MINiML"}
-    tree = ET.parse(os.path.join(CACHE_DIR, "GSE91061_family.xml"))
-    root = tree.getroot()
-
-    response_map = {}
-    for sample in root.findall(".//geo:Sample", ns):
-        title = sample.findtext("geo:Title", "", ns)
-        resp = ""
-        for ch in sample.findall(".//geo:Characteristics", ns):
-            if ch.get("tag", "") == "response":
-                resp = ch.text.strip() if ch.text else ""
-        response_map[title] = resp
-
-    expr["response"] = expr.index.map(response_map)
+    # Response annotations are now embedded in the committed sample_meta CSV.
+    # No XML parsing needed; the CSV was enriched from the GEO XML during
+    # initial data preparation (see external_validation_geo.py).
+    expr["response"] = meta["response"]
     expr["timepoint"] = meta["timepoint"]
     expr["patient"] = meta["patient"]
 
