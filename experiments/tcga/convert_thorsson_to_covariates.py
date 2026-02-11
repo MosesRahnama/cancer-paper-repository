@@ -2,14 +2,13 @@
 Convert Thorsson et al. 2018 Immunity supplemental data (mmc2.xlsx)
 to the purity/immune covariate CSV format for robustness_check.py
 """
+import argparse
 import os
 import pandas as pd
 
-# Source file from Downloads
-SOURCE_FILE = r"C:\Users\Moses\OpComp\Mina Analytics Dropbox\Moses Rahnama\PC\Downloads\mmc2.xlsx"
-
-# Target location in cancer-paper-repository
-TARGET_FILE = r"C:\Users\Moses\Cancer\cancer-paper-repository\experiments\tcga\tcga_purity_immune_covariates.csv"
+HERE = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_SOURCE_FILE = os.path.join(HERE, "mmc2.xlsx")
+DEFAULT_TARGET_FILE = os.path.join(HERE, "tcga_purity_immune_covariates.csv")
 
 # Cancer types in our analysis (abbreviated format used in Thorsson data)
 TARGET_PROJECTS = [
@@ -22,10 +21,27 @@ TARGET_PROJECTS = [
 ]
 
 def main():
-    print("Loading Thorsson Immunity data from mmc2.xlsx...")
+    parser = argparse.ArgumentParser(
+        description="Convert Thorsson mmc2.xlsx into robustness covariates CSV."
+    )
+    parser.add_argument(
+        "--source-file",
+        default=DEFAULT_SOURCE_FILE,
+        help="Path to mmc2.xlsx (Thorsson et al. supplementary data).",
+    )
+    parser.add_argument(
+        "--target-file",
+        default=DEFAULT_TARGET_FILE,
+        help="Output CSV path for robustness_check.py covariates.",
+    )
+    args = parser.parse_args()
+
+    print(f"Loading Thorsson Immunity data from: {args.source_file}")
+    if not os.path.exists(args.source_file):
+        raise FileNotFoundError(f"Source file not found: {args.source_file}")
 
     # Read the Excel file (should be first sheet with sample-level data)
-    df = pd.read_excel(SOURCE_FILE, sheet_name=0)
+    df = pd.read_excel(args.source_file, sheet_name=0)
 
     print(f"  Loaded {len(df)} rows")
     print(f"\n  Available columns:")
@@ -155,10 +171,10 @@ def main():
         print(f"    Range: [{df_out['purity'].min():.3f}, {df_out['purity'].max():.3f}]")
 
     # Save to target location
-    os.makedirs(os.path.dirname(TARGET_FILE), exist_ok=True)
-    df_out.to_csv(TARGET_FILE, index=False)
+    os.makedirs(os.path.dirname(args.target_file), exist_ok=True)
+    df_out.to_csv(args.target_file, index=False)
 
-    print(f"\nSaved to: {TARGET_FILE}")
+    print(f"\nSaved to: {args.target_file}")
     print(f"  {len(df_out)} samples across {len(TARGET_PROJECTS)} cancer types")
     print(f"  Columns: {', '.join(df_out.columns)}")
 

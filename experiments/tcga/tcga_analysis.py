@@ -8,7 +8,9 @@ Tests the boundary-logic prediction:
 Data: TCGA-SKCM (melanoma) + TCGA-LUAD (lung adenocarcinoma)
 Source: ISB-CGC BigQuery, extracted to gs://kernel-o6/tcga_cancer_boundary/data/
 """
+import argparse
 import os
+import sys
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -16,14 +18,10 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# ── Load data ──────────────────────────────────────────────────────────────
-DATA_DIR = r"C:\Users\Moses\Cancer\data"
-OUTPUT_DIR = r"C:\Users\Moses\Cancer\data\figures"
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+sys.path.insert(0, os.path.dirname(__file__))
+from tcga_config import DATA_DIR, FIGURE_DIR, upload_to_gcs  # noqa: E402
 
-df = pd.read_csv(os.path.join(DATA_DIR, "tcga_expression_tpm.csv"))
-print(f"Loaded {len(df)} samples")
-print(f"Projects: {df['project_short_name'].value_counts().to_dict()}")
+OUTPUT_DIR = FIGURE_DIR
 
 # ── Define gene groups ─────────────────────────────────────────────────────
 CHECKPOINT = ["CD274", "PDCD1LG2", "PDCD1"]
@@ -195,6 +193,33 @@ def plot_hypothesis1(df_subset, project_name):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Run 2-cohort Hypothesis 1 correlation analysis.")
+    parser.add_argument(
+        "--data-dir",
+        default=DATA_DIR,
+        help="Directory containing tcga_expression_tpm.csv and output CSV.",
+    )
+    parser.add_argument(
+        "--figure-dir",
+        default=FIGURE_DIR,
+        help="Directory to write figure PNG files.",
+    )
+    parser.add_argument(
+        "--no-gcs",
+        action="store_true",
+        help="Skip GCS upload and keep outputs local only.",
+    )
+    args = parser.parse_args()
+
+    os.makedirs(args.figure_dir, exist_ok=True)
+
+    df = pd.read_csv(os.path.join(args.data_dir, "tcga_expression_tpm.csv"))
+    print(f"Loaded {len(df)} samples")
+    print(f"Projects: {df['project_short_name'].value_counts().to_dict()}")
+
+    global OUTPUT_DIR
+    OUTPUT_DIR = args.figure_dir
+
     all_results = []
 
     for proj in ["TCGA-SKCM", "TCGA-LUAD"]:
@@ -219,28 +244,19 @@ def main():
 
     # Combine and save
     results_df = pd.concat(all_results, ignore_index=True)
-    results_path = os.path.join(DATA_DIR, "hypothesis1_correlations.csv")
+    results_path = os.path.join(args.data_dir, "hypothesis1_correlations.csv")
     results_df.to_csv(results_path, index=False)
     print(f"\nAll correlations saved to: {results_path}")
 
-    # Upload to GCS
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
-        r"C:\Users\Moses\commercials\infra\secrets\gcp-credentials.json"
-    )
-    from google.cloud import storage
-    gcs_client = storage.Client(project="kernel-o6")
-    bucket = gcs_client.bucket("kernel-o6")
-
-    blob = bucket.blob("tcga_cancer_boundary/analysis/hypothesis1_correlations.csv")
-    blob.upload_from_filename(results_path)
-    print(f"  Uploaded to gs://kernel-o6/tcga_cancer_boundary/analysis/hypothesis1_correlations.csv")
-
-    for fig_file in os.listdir(OUTPUT_DIR):
-        if fig_file.endswith(".png"):
-            local_path = os.path.join(OUTPUT_DIR, fig_file)
-            blob = bucket.blob(f"tcga_cancer_boundary/figures/{fig_file}")
-            blob.upload_from_filename(local_path)
-            print(f"  Uploaded to gs://kernel-o6/tcga_cancer_boundary/figures/{fig_file}")
+    if not args.no_gcs:
+        try:
+            upload_to_gcs(results_path, "analysis/hypothesis1_correlations.csv")
+            for fig_file in os.listdir(args.figure_dir):
+                if fig_file.endswith(".png"):
+                    local_path = os.path.join(args.figure_dir, fig_file)
+                    upload_to_gcs(local_path, f"figures/{fig_file}")
+        except Exception as e:
+            print(f"  GCS upload failed (non-fatal): {e}")
 
     print("\nDone.")
 

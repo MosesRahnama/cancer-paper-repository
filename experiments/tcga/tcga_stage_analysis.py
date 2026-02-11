@@ -188,7 +188,7 @@ def main():
             ax.set_title(label)
             continue
 
-        bp = ax.boxplot(data_by_stage, labels=stage_labels, patch_artist=True,
+        bp = ax.boxplot(data_by_stage, tick_labels=stage_labels, patch_artist=True,
                         widths=0.55, showfliers=False)
         for i, (patch, s) in enumerate(zip(bp["boxes"], STAGE_ORDER[:len(data_by_stage)])):
             patch.set_facecolor(box_colors.get(s, "#cccccc"))
@@ -296,6 +296,13 @@ def main():
             ctype = row.get("project", "")
             analyte = row.get("analyte", "")
             n_pairs = row.get("n_pairs", np.nan)
+            n_t_unpaired = row.get("n_tumor_unpaired", np.nan)
+            n_n_unpaired = row.get("n_normal_unpaired", np.nan)
+            n_unpaired = (
+                n_t_unpaired + n_n_unpaired
+                if np.isfinite(n_t_unpaired) and np.isfinite(n_n_unpaired)
+                else n_pairs
+            )
             append_entry(
                 source="tumor_normal",
                 cancer_type=ctype,
@@ -312,7 +319,7 @@ def main():
                 test_type="mannwhitney",
                 statistic=row.get("mannwhitney_stat", np.nan),
                 p_value=row.get("mannwhitney_p", np.nan),
-                n=n_pairs,
+                n=n_unpaired,
             )
         print(f"  Loaded {2 * len(tn)} p-values from tumor_normal_comparison.csv")
 

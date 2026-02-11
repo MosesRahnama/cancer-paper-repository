@@ -33,14 +33,22 @@ class Tissue:
     Attributes:
         cells: Dict mapping cell ID to Cell object.
         edges: Set of (source_id, target_id, RelationType) tuples.
-        energy_budget: Global energy pool. Depletes as cells consume.
+        energy_budget: Host metabolic capacity pool. Represents organism-level
+            resources available to the tissue. Cancer cells consume this at
+            2.7x the normal rate (Warburg proxy), modeling the Budget Escape
+            dynamic: tumor demand exceeds homeostatic capacity (C_G + C_S >
+            B_homeostasis), and the host pays the cost. Depletion to zero
+            represents systemic host collapse (cachexia endpoint).
         time: Current simulation timestep.
+        host_collapsed: True when energy_budget is exhausted (cachexia death).
     """
 
     def __init__(self, n_cells: int = 100, energy_budget: float = 10000.0):
         self.cells: Dict[str, Cell] = {}
         self.edges: Set[Tuple[str, str, RelationType]] = set()
         self.energy_budget = energy_budget
+        self.initial_energy_budget = energy_budget
+        self.host_collapsed = False
         self.time = 0
         self._next_id = 0
 
@@ -101,8 +109,12 @@ class Tissue:
         new_cells: Dict[str, Cell] = {}
 
         for cid, cell in list(self.cells.items()):
-            # Energy consumption
+            # Host metabolic capacity check: tumor demand vs host resources.
+            # When budget is exhausted, the host has collapsed under tumor
+            # metabolic burden (cachexia endpoint / Budget Escape consequence).
             if self.energy_budget < cell.energy_cost:
+                if not self.host_collapsed:
+                    self.host_collapsed = True
                 continue
             self.energy_budget -= cell.energy_cost
 
@@ -126,9 +138,11 @@ class Tissue:
                 }
 
             # --- Division ---
-            # Healthy-cell division can be swept independently via p_healthy_division.
+            # Healthy-cell division is globally sweepable via p_healthy_division,
+            # but still respects per-cell overrides (e.g., growth arrest after
+            # differentiation therapy).
             division_prob = (
-                p_healthy_division
+                min(p_healthy_division, cell.division_rate)
                 if cell.state == CellState.HEALTHY
                 else cell.division_rate
             )
@@ -190,3 +204,17 @@ class Tissue:
         for _, _, r in self.edges:
             counts[r] += 1
         return counts
+
+    def metabolic_demand_per_step(self) -> float:
+        """Total energy demand of all cells in a single step.
+
+        When this exceeds the homeostatic rate (n_healthy * 1.0), the
+        tissue is in Budget Escape: C_G + C_S > B_homeostasis.
+        """
+        return sum(c.energy_cost for c in self.cells.values())
+
+    def budget_fraction_remaining(self) -> float:
+        """Fraction of initial host capacity remaining (cachexia proxy)."""
+        if self.initial_energy_budget <= 0:
+            return 0.0
+        return self.energy_budget / self.initial_energy_budget

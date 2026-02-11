@@ -783,7 +783,7 @@ def run_for_project(df_all: pd.DataFrame, project: str, extra_cols):
     high = sub[sub["pdl1_log"] >= pdl1_cut].copy()
 
     cov_m3 = ["circ_cv_ortho"] + base_covars + [c for c in extra_covars if c in high.columns]
-    fit_m3, _, status_m3 = fit_cox_breslow(
+    fit_m3, m3_data, status_m3 = fit_cox_breslow(
         high,
         duration_col="surv_time",
         event_col="event",
@@ -795,6 +795,17 @@ def run_for_project(df_all: pd.DataFrame, project: str, extra_cols):
         tmp["project"] = project
         tmp["model"] = "cox_high_pdl1_clock_effect"
         coef_records.append(tmp)
+
+        ph_records.extend(
+            ph_time_interaction_screen(
+                m3_data,
+                duration_col="surv_time",
+                event_col="event",
+                covariates=fit_m3["meta"]["covariates_used"],
+                model_label="cox_high_pdl1_clock_effect",
+                project=project,
+            )
+        )
     else:
         print(f"[{project}] cox_high_pdl1_clock_effect failed: {status_m3}")
 
@@ -973,6 +984,41 @@ def main():
     if not primary_df.empty:
         primary_df = apply_bh(primary_df, p_col="p_value")
 
+    model_by_test = {
+        "am_vs_dc_adjusted": "cox_am_vs_dc_adjusted",
+        "am_vs_dc_plus_pdl1_b2m": "cox_am_vs_dc_plus_pdl1_b2m",
+        "pdl1_x_clock_interaction": "cox_pdl1_clock_interaction",
+        "high_pdl1_clock_effect": "cox_high_pdl1_clock_effect",
+    }
+    if not primary_df.empty:
+        primary_df["model"] = primary_df["test_name"].map(model_by_test)
+        if not ph_df.empty:
+            ph_summary = (
+                ph_df.groupby(["project", "model"], dropna=False)["ph_violation_p_lt_0_05"]
+                .agg(["count", "sum"])
+                .reset_index()
+                .rename(columns={"count": "ph_screen_covariates", "sum": "ph_violation_count"})
+            )
+            primary_df = primary_df.merge(ph_summary, on=["project", "model"], how="left")
+            primary_df["ph_screen_covariates"] = (
+                primary_df["ph_screen_covariates"].fillna(0).astype(int)
+            )
+            primary_df["ph_violation_count"] = (
+                primary_df["ph_violation_count"].fillna(0).astype(int)
+            )
+            with np.errstate(divide="ignore", invalid="ignore"):
+                primary_df["ph_violation_fraction"] = np.where(
+                    primary_df["ph_screen_covariates"] > 0,
+                    primary_df["ph_violation_count"] / primary_df["ph_screen_covariates"],
+                    np.nan,
+                )
+            primary_df["ph_caution"] = primary_df["ph_violation_fraction"] >= 0.25
+        else:
+            primary_df["ph_screen_covariates"] = 0
+            primary_df["ph_violation_count"] = 0
+            primary_df["ph_violation_fraction"] = np.nan
+            primary_df["ph_caution"] = False
+
     out_coef = os.path.join(DATA_DIR, "robustness_cox_coefficients.csv")
     out_primary = os.path.join(DATA_DIR, "robustness_primary_tests.csv")
     out_ph = os.path.join(DATA_DIR, "robustness_ph_diagnostics.csv")
@@ -992,10 +1038,15 @@ def main():
         cols = [
             "project",
             "test_name",
+            "model",
             "covariate",
             "p_value",
             "q_value",
             "significant_fdr05",
+            "ph_screen_covariates",
+            "ph_violation_count",
+            "ph_violation_fraction",
+            "ph_caution",
             "n_rows",
             "n_events",
             "status",

@@ -1,10 +1,11 @@
 """Discover available TCGA RNA-seq tables in ISB-CGC BigQuery."""
 import os
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\Moses\commercials\infra\secrets\gcp-credentials.json"
+import sys
 
-from google.cloud import bigquery
+sys.path.insert(0, os.path.dirname(__file__))
+from tcga_config import get_bq_client  # noqa: E402
 
-client = bigquery.Client(project="kernel-o6")
+client = get_bq_client()
 
 # Check what TCGA RNA-seq tables exist
 query = """

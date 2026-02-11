@@ -1,0 +1,53 @@
+\contentsline {section}{\numberline {1}Introduction}{5}{section.1}%
+\contentsline {section}{\numberline {2}The Necessary Bug: Mutation as the Price of Innovation}{6}{section.2}%
+\contentsline {section}{\numberline {3}Positioning Within Cancer Theory}{7}{section.3}%
+\contentsline {section}{\numberline {4}Boundary Failure as Loss of Cross-Scale Observability}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Relational Identity and Organism-Level Control}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}The Identity Collapse}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Distinction, Information, and Energetic Constraints}{10}{subsection.4.3}%
+\contentsline {section}{\numberline {5}A Structural Analogy to Recursive Self-Duplication}{11}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The Computational Pattern}{11}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}The Biological Reading (Analogy, Not Identity)}{12}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Why the Analogy Is Useful}{12}{subsection.5.3}%
+\contentsline {section}{\numberline {6}A Control-Budget Formulation of Metabolic Escape}{13}{section.6}%
+\contentsline {section}{\numberline {7}Temporal Coordination and Loss of Synchrony}{14}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Circadian Disruption and Cancer}{14}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Loss of Temporal Coordination as Boundary Failure}{14}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Perineural Invasion Reinterpreted}{15}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Immune Evasion as Loss of Distinguishability}{15}{section.8}%
+\contentsline {subsection}{\numberline {8.1}The PD-1/PD-L1 Checkpoint Axis}{15}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Secondary Boundary Failures}{15}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Gap Junctions and Antigen Broadcast}{16}{subsection.8.3}%
+\contentsline {section}{\numberline {9}Thermodynamic Perspective: Cost Externalization}{16}{section.9}%
+\contentsline {subsection}{\numberline {9.1}The Warburg Effect as Metabolic Decoupling}{16}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Cachexia as Systemic Cost Payment}{16}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Entropy Production (Heuristic)}{17}{subsection.9.3}%
+\contentsline {section}{\numberline {10}Toy Formalism: Tissue as a Labeled Graph}{17}{section.10}%
+\contentsline {subsection}{\numberline {10.1}State Variables}{17}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}A Coherence Metric}{18}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Cancer Transform Operator}{18}{subsection.10.3}%
+\contentsline {section}{\numberline {11}Toward Measurable Proxies}{19}{section.11}%
+\contentsline {section}{\numberline {12}Therapeutic Design Principle: Restore Observability and Enforce Termination}{19}{section.12}%
+\contentsline {subsection}{\numberline {12.1}Force Distinction}{20}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Restore Termination Predicates}{20}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Re-couple to Tissue Constraints}{20}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Constrain Resource Externalization}{20}{subsection.12.4}%
+\contentsline {section}{\numberline {13}Clinical Correlations and Testable Hypotheses}{21}{section.13}%
+\contentsline {section}{\numberline {14}Empirical Validation: TCGA Cohort Analysis}{22}{section.14}%
+\contentsline {subsection}{\numberline {14.1}Circadian Coherence and PD-L1}{22}{subsection.14.1}%
+\contentsline {subsection}{\numberline {14.2}PD-L1 and MHC Class~I Co-regulation}{23}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}Gap Junction Expression}{23}{subsection.14.3}%
+\contentsline {subsection}{\numberline {14.4}Summary of Key Correlations}{24}{subsection.14.4}%
+\contentsline {subsection}{\numberline {14.5}Tumor vs.\ Matched Normal Tissue}{27}{subsection.14.5}%
+\contentsline {subsection}{\numberline {14.6}Active Masking vs.\ Temporal Decoherence Classification}{28}{subsection.14.6}%
+\contentsline {subsection}{\numberline {14.7}Survival Analysis}{29}{subsection.14.7}%
+\contentsline {subsection}{\numberline {14.8}Robustness to Clinical Covariates and Interaction Structure}{31}{subsection.14.8}%
+\contentsline {subsection}{\numberline {14.9}Stage-Stratified Analysis}{32}{subsection.14.9}%
+\contentsline {subsection}{\numberline {14.10}Implications for the Framework}{33}{subsection.14.10}%
+\contentsline {section}{\numberline {15}Simulation}{34}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Update Rules}{34}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}What the Simulation Demonstrates}{34}{subsection.15.2}%
+\contentsline {section}{\numberline {16}Limitations}{40}{section.16}%
+\contentsline {section}{\numberline {17}Conclusion}{41}{section.17}%
+\contentsline {section}{\numberline {18}Future Research Directions}{42}{section.18}%
+\contentsline {section}{\numberline {A}Code Availability and Reproducibility Assets}{46}{appendix.A}%

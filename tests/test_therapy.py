@@ -27,3 +27,16 @@ def test_differentiation_therapy_restores_healthy_state():
     assert treated == 1
     assert tissue.cells["cell_0"].state == CellState.HEALTHY
     assert tissue.cells["cell_0"].division_rate <= 0.01
+
+
+def test_differentiation_therapy_enforces_growth_arrest_even_with_high_global_division():
+    tissue = _make_cancer_tissue(n_cells=1, n_cancer=1)
+    apply_therapy_to_all_cancer(tissue, differentiation_therapy)
+    before = tissue.total_cells()
+
+    # Healthy division sweep can be high globally; differentiated cells should
+    # still obey per-cell growth arrest.
+    tissue.step(p_mutation=0.0, p_progression=0.0, p_healthy_division=1.0)
+    after = tissue.total_cells()
+
+    assert after == before

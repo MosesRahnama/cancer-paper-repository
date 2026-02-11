@@ -67,7 +67,7 @@ def get_matched_pairs(df, project):
     normal = proj_df[proj_df["sample_type_name"] == "Solid Tissue Normal"]
     tumor = proj_df[proj_df["sample_type_name"].str.contains(
         "Tumor|Metastatic", case=False, na=False
-    )]
+    )].copy()
 
     # Find shared case barcodes
     shared_cases = sorted(
@@ -76,29 +76,39 @@ def get_matched_pairs(df, project):
 
     if len(shared_cases) < 5:
         print(f"  {project}: only {len(shared_cases)} matched pairs -- skipping")
-        return None, None, []
+        return None, None, None, None, []
 
-    # For patients with multiple tumor samples, keep the first
+    # For patients with multiple tumor samples, pick a deterministic
+    # biologically-prioritized sample (Primary > Recurrent > Metastatic).
+    tumor["_sample_priority"] = 4
+    sample_type = tumor["sample_type_name"].fillna("").astype(str)
+    tumor.loc[sample_type.str.contains("Primary Tumor", case=False), "_sample_priority"] = 1
+    tumor.loc[sample_type.str.contains("Recurrent Tumor", case=False), "_sample_priority"] = 2
+    tumor.loc[sample_type.str.contains("Metastatic", case=False), "_sample_priority"] = 3
+
     normal_matched = (
         normal[normal["case_barcode"].isin(shared_cases)]
+        .sort_values(["case_barcode", "sample_barcode"])
         .drop_duplicates(subset="case_barcode", keep="first")
         .set_index("case_barcode")
         .loc[shared_cases]
     )
     tumor_matched = (
         tumor[tumor["case_barcode"].isin(shared_cases)]
+        .sort_values(["case_barcode", "_sample_priority", "sample_barcode"])
         .drop_duplicates(subset="case_barcode", keep="first")
         .set_index("case_barcode")
         .loc[shared_cases]
+        .drop(columns=["_sample_priority"])
     )
 
-    return tumor_matched, normal_matched, shared_cases
+    return tumor_matched, normal_matched, tumor, normal, shared_cases
 
 
-def run_paired_tests(tumor_df, normal_df, shared_cases):
+def run_paired_tests(tumor_df, normal_df, tumor_unpaired_df, normal_unpaired_df, shared_cases):
     """
-    Run Wilcoxon signed-rank (paired) and Mann-Whitney U (unpaired)
-    for circadian CV + individual genes.
+    Run Wilcoxon signed-rank on matched pairs and Mann-Whitney U
+    on unpaired project-level tumor vs normal samples.
     """
     results = []
 
@@ -108,14 +118,30 @@ def run_paired_tests(tumor_df, normal_df, shared_cases):
 
     # Drop NaN pairs
     valid = np.isfinite(tumor_cv) & np.isfinite(normal_cv)
+    tumor_cv_unpaired = compute_circadian_cv(tumor_unpaired_df).values
+    normal_cv_unpaired = compute_circadian_cv(normal_unpaired_df).values
     if valid.sum() >= 5:
         stat_w, p_w = stats.wilcoxon(tumor_cv[valid], normal_cv[valid])
+    else:
+        stat_w, p_w = np.nan, np.nan
+
+    if np.isfinite(tumor_cv_unpaired).sum() >= 5 and np.isfinite(normal_cv_unpaired).sum() >= 5:
         stat_u, p_u = stats.mannwhitneyu(
-            tumor_cv[valid], normal_cv[valid], alternative="two-sided"
+            tumor_cv_unpaired[np.isfinite(tumor_cv_unpaired)],
+            normal_cv_unpaired[np.isfinite(normal_cv_unpaired)],
+            alternative="two-sided",
         )
+    else:
+        stat_u, p_u = np.nan, np.nan
+
+    if valid.sum() >= 5 or (
+        np.isfinite(tumor_cv_unpaired).sum() >= 5 and np.isfinite(normal_cv_unpaired).sum() >= 5
+    ):
         results.append({
             "analyte": "Circadian_CV",
             "n_pairs": int(valid.sum()),
+            "n_tumor_unpaired": int(np.isfinite(tumor_cv_unpaired).sum()),
+            "n_normal_unpaired": int(np.isfinite(normal_cv_unpaired).sum()),
             "tumor_mean": float(np.nanmean(tumor_cv[valid])),
             "normal_mean": float(np.nanmean(normal_cv[valid])),
             "tumor_median": float(np.nanmedian(tumor_cv[valid])),
@@ -133,16 +159,32 @@ def run_paired_tests(tumor_df, normal_df, shared_cases):
         t_vals = log_transform(tumor_df[gene]).values
         n_vals = log_transform(normal_df[gene]).values
         valid = np.isfinite(t_vals) & np.isfinite(n_vals)
-        if valid.sum() < 5:
+        if valid.sum() >= 5:
+            stat_w, p_w = stats.wilcoxon(t_vals[valid], n_vals[valid])
+        else:
+            stat_w, p_w = np.nan, np.nan
+
+        t_vals_unpaired = log_transform(tumor_unpaired_df[gene]).values
+        n_vals_unpaired = log_transform(normal_unpaired_df[gene]).values
+        valid_t_unpaired = np.isfinite(t_vals_unpaired)
+        valid_n_unpaired = np.isfinite(n_vals_unpaired)
+        if valid_t_unpaired.sum() >= 5 and valid_n_unpaired.sum() >= 5:
+            stat_u, p_u = stats.mannwhitneyu(
+                t_vals_unpaired[valid_t_unpaired],
+                n_vals_unpaired[valid_n_unpaired],
+                alternative="two-sided",
+            )
+        else:
+            stat_u, p_u = np.nan, np.nan
+
+        if not np.isfinite(p_w) and not np.isfinite(p_u):
             continue
 
-        stat_w, p_w = stats.wilcoxon(t_vals[valid], n_vals[valid])
-        stat_u, p_u = stats.mannwhitneyu(
-            t_vals[valid], n_vals[valid], alternative="two-sided"
-        )
         results.append({
             "analyte": gene,
             "n_pairs": int(valid.sum()),
+            "n_tumor_unpaired": int(valid_t_unpaired.sum()),
+            "n_normal_unpaired": int(valid_n_unpaired.sum()),
             "tumor_mean": float(np.nanmean(t_vals[valid])),
             "normal_mean": float(np.nanmean(n_vals[valid])),
             "tumor_median": float(np.nanmedian(t_vals[valid])),
@@ -309,7 +351,7 @@ def main():
         print(f"  {project} ({label})")
         print(f"{'='*60}")
 
-        tumor_matched, normal_matched, shared_cases = get_matched_pairs(
+        tumor_matched, normal_matched, tumor_unpaired, normal_unpaired, shared_cases = get_matched_pairs(
             df, project
         )
         if tumor_matched is None:
@@ -319,7 +361,7 @@ def main():
 
         # Run statistical tests
         test_results = run_paired_tests(
-            tumor_matched, normal_matched, shared_cases
+            tumor_matched, normal_matched, tumor_unpaired, normal_unpaired, shared_cases
         )
 
         for r in test_results:
@@ -366,6 +408,7 @@ def main():
     # Reorder columns
     col_order = [
         "project", "project_label", "analyte", "n_pairs",
+        "n_tumor_unpaired", "n_normal_unpaired",
         "tumor_mean", "normal_mean", "tumor_median", "normal_median",
         "wilcoxon_stat", "wilcoxon_p", "wilcoxon_fdr",
         "mannwhitney_stat", "mannwhitney_p", "mannwhitney_fdr",
