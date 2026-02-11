@@ -1,202 +1,256 @@
 # Internal Consistency Check: Budget Escape Pivot
 
-**Date:** 2026-02-10
-**Paper:** Cancer_As_Boundary_Logic_Failure.tex
-**Analysis:** Post-"Budget Escape" pivot integration
+**Date:** 2026-02-11 (updated)
+**Paper:** `paper/Cancer_As_Boundary_Logic_Failure.tex`
+**Previous review:** 2026-02-10 (identified 5 "reduced investment" passages)
+**Current review:** 2026-02-11 (full re-audit of manuscript, code, figures, data)
 
 ---
 
 ## Executive Summary
 
-The "Budget Escape" pivot has been **partially integrated** with **5 major inconsistencies** requiring correction. Section 6 (Control Budget) has been properly rewritten, and the key implication has been added to Section 10. However, **contradictory "reduced investment" language** from the old trade-off model remains in the Abstract, Introduction, and Thermodynamics sections.
+All five "reduced investment" passages flagged in the 2026-02-10 report have been **corrected**. The Budget Escape narrative is now internally consistent from Abstract through Conclusion. No `B_ctrl` remnants. No "reduced investment" language anywhere in the manuscript.
 
-**Status:** ❌ **NOT READY FOR SUBMISSION** - Requires revision of 5 key passages
+**Status:** ✅ **LANGUAGE CONSISTENCY RESOLVED**
 
----
+Three discrepancy classes were tracked during the 2026-02-11 audit:
 
-## PIVOT SUMMARY: What Changed
+1. Stage figure/text FDR scope mismatch (Section 3) — resolved
+2. Tumor–normal circadian-CV $p$ value drift between manuscript/figure/CSV (Section 4) — resolved
+3. Survival BH-FDR scope inconsistency across text/table/plots (Section 5) — resolved
 
-### Old Model (REJECTED by TCGA data)
-- **Claim:** Tumors face a fixed metabolic budget: $C_G + C_S \le B$
-- **Prediction:** Proliferation (G) and differentiation/coherence (S) should trade off (negative correlation)
-- **Interpretation:** "Reduced investment in differentiation"
-
-### New Model (SUPPORTED by TCGA data)
-- **Claim:** Tumors violate homeostatic budget limits: $C_G + C_S > B_{\text{homeostasis}}$
-- **Finding:** Positive correlation between proliferation and coherence markers in 5/6 cancer types
-- **Interpretation:** Tumors **expand** metabolic capacity (Warburg effect) to sustain BOTH high proliferation AND high coherence
-- **Cost:** Externalized to host (cachexia = systemic payment for tumor's metabolic excess)
+**Status:** ✅ **PRIMARY CONSISTENCY ISSUES RESOLVED**
 
 ---
 
-## ✅ CONSISTENT SECTIONS (Properly Updated)
+## ✅ PREVIOUSLY FLAGGED ISSUES — ALL RESOLVED
 
-### 1. **Section 6: A Control-Budget Formulation of Metabolic Escape** (Lines 258-291)
-**Status:** ✅ EXCELLENT
+### 1. Abstract (formerly Line 55)
+- **Old:** "reduced differentiation investment"
+- **Current:** "metabolic expansion (Warburg effect), proliferative burden, and tumor-immune inflammatory signaling produce systemic metabolic stress, including cachexia"
+- **Status:** ✅ FIXED
 
-- Title explicitly mentions "Metabolic Escape"
-- Line 263-266: States normal constraint correctly ($C_G + C_S \le B_{\text{homeostasis}}$)
-- Line 268: "contradicting a simple closed-system trade-off within the tumor"
-- Line 268-271: Introduces "budget escape": $C_G + C_S > B_{\text{homeostasis}}$
-- Line 272: "The tumor sustains both high proliferation and high internal coherence (the 'Active Masking' phenotype) by expanding its metabolic capacity via the Warburg effect and externalizing costs to the host"
-- Table (275-288): Contrasts "Budget Maintained" (Normal) vs. "Budget Violation" (Malignant)
-- Line 290: "Cancer cells do not evade thermodynamics; they redistribute burden across scales"
+### 2. Introduction / Distinction Section (formerly Line 193)
+- **Old:** "investment in stable identity-bearing differentiation is reduced"
+- **Current:** "the cost of stable identity-bearing differentiation is often externalized to the host"
+- **Status:** ✅ FIXED
 
-**No changes needed.**
+### 3. Introduction / Distinction Section (formerly Line 196)
+- **Old:** "reduced local differentiation investment"
+- **Current:** "metabolic expansion (Warburg), direct host resource burden, and tumor-immune inflammatory catabolism"
+- **Status:** ✅ FIXED
 
----
+### 4. Warburg Section (formerly Line 346)
+- **Old:** "reduced investment in differentiation-specific regulatory order"
+- **Current:** "a mechanism to support high-entropy proliferative states without sacrificing regulatory order...Malignancy expands the metabolic budget to support both proliferation and active evasion (Active Masking), increasing organism-level burden"
+- **Status:** ✅ FIXED
 
-### 2. **Section 10.7: Implications** (Line 720)
-**Status:** ✅ GOOD
+### 5. Cachexia Section (formerly Line 354)
+- **Old:** "reduced differentiation investment"
+- **Current:** "local proliferative advantage with expanded metabolic capacity is coupled to global host burden and inflammatory wasting"
+- **Status:** ✅ FIXED
 
-> "**Budget Escape, not Trade-off.** Contrary to a simple resource trade-off hypothesis, proliferation and coherence markers show positive correlation in 5/6 cancer types. This contradicts a fixed-budget constraint within the tumor ($C_G + C_S \le B$) and supports a 'budget escape' model where malignant cells expand metabolic capacity (Warburg effect) to sustain both high proliferation and high internal order, externalizing the cost to the host (cachexia)."
-
-**No changes needed.**
-
----
-
-### 3. **Terminology Consistency**
-**Status:** ✅ GOOD
-
-- All instances of $B_{\text{ctrl}}$ have been replaced with $B_{\text{homeostasis}}$
-- "Trade-off" is only used in appropriate contexts:
-  - Line 266: "In healthy tissue, this creates a necessary trade-off" (correct - referring to NORMAL tissue)
-  - Line 268: "contradicting a simple closed-system trade-off within the tumor" (correct - rejecting the old model)
-  - Line 720: "Budget Escape, not Trade-off" (correct - the pivot statement)
-
-**No changes needed.**
+### 6. Limitations Section (formerly Line 823, flagged as MINOR)
+- **Old:** "reduced investment in identity-forming information"
+- **Current:** "distinguishing energetic replication cost from decoupled identity-forming processes"
+- **Status:** ✅ FIXED
 
 ---
 
-## ❌ INCONSISTENT SECTIONS (Still Using Old Model Language)
+## ✅ NARRATIVE FLOW VERIFICATION
 
-### **CRITICAL ISSUE: "Reduced Investment" Language**
+The Budget Escape story now flows correctly through the manuscript:
 
-The following 5 passages contradict the Budget Escape model by using "reduced investment" language from the old trade-off framework:
-
----
-
-### ❌ **1. Abstract (Line 55)**
-
-**Current text:**
-> "The framework explains how **reduced differentiation investment**, proliferative burden, and tumor-immune inflammatory signaling produce systemic metabolic stress, including cachexia."
-
-**Problem:** This says tumors REDUCE investment in differentiation, which contradicts the TCGA finding that tumors show POSITIVE correlation between proliferation and coherence (i.e., they invest in BOTH).
-
-**Recommended fix:**
-> "The framework explains how malignant cells expand metabolic capacity to sustain high proliferative burden alongside maintained or elevated tissue coherence, externalizing the energetic cost to the host via inflammatory signaling and systemic catabolism (cachexia)."
-
-**OR (shorter):**
-> "The framework explains how metabolic expansion (Warburg effect), proliferative burden, and tumor-immune inflammatory signaling produce systemic metabolic stress, including cachexia."
+1. **Section 6 (Control Budget):** Introduces homeostatic budget constraint → data contradicts simple trade-off → introduces Budget Escape ($C_G + C_S > B_{\text{homeostasis}}$) → supported by new Figure (control_budget_combined.png)
+2. **Section 8 (Warburg):** Warburg as metabolic autonomy and expansion, not reduced investment
+3. **Section 8 (Cachexia):** Three-mechanism model (substrate burden, budget escape, inflammatory catabolism) — no "reduced investment" language
+4. **Section 10 (TCGA):** Budget Escape listed as Implication #3 with 5/6 positive-correlation evidence
+5. **Conclusion:** "forced distinction" continuum, no trade-off language
 
 ---
 
-### ❌ **2. Introduction: Distinction Section (Line 193)**
+## ✅ MANUSCRIPT STRUCTURAL INTEGRITY CHECKS (LaTeX)
 
-**Current text:**
-> "**Malignant duplication:** The daughter cell can remain insufficiently distinguishable from the parent for reliable organism-level control. The physical replication cost is paid, but **investment in stable identity-bearing differentiation is reduced**."
+Read-only integrity checks on `paper/Cancer_As_Boundary_Logic_Failure.tex` (including `\\input{tables/evidence_table_prespecified.tex}`):
 
-**Problem:** Same issue - contradicts Budget Escape.
-
-**Recommended fix:**
-> "**Malignant duplication:** The daughter cell can remain insufficiently distinguishable from the parent for reliable organism-level control. The physical replication cost is paid, and internal coherence can be maintained or even elevated (Active Masking phenotype), but the cell **decouples from organism-level regulatory constraints**. The tumor expands its metabolic capacity to sustain both proliferation and structural organization, externalizing the cost to the host."
-
----
-
-### ❌ **3. Introduction: Distinction Section (Line 196)**
-
-**Current text:**
-> "In later sections we use this to interpret metabolic reprogramming and cachexia via three coupled processes: **reduced local differentiation investment**, direct host resource burden, and tumor-immune inflammatory catabolism."
-
-**Problem:** Same issue.
-
-**Recommended fix:**
-> "In later sections we use this to interpret metabolic reprogramming and cachexia via three coupled processes: **metabolic expansion to sustain simultaneous proliferation and coherence** (Budget Escape), direct host resource burden, and tumor-immune inflammatory catabolism."
+- Figures: 23 `\\includegraphics{...}` calls; all referenced image files exist in-repo.
+- Tables: 5 `table` environments; the pre-specified evidence table label `tab:evidence-table` is defined in the `tables/evidence_table_prespecified.tex` input file.
+- Cross-references: 0 missing `\\ref{}` / `\\eqref{}` targets; 0 duplicate `\\label{}` keys.
+- Citations: 44 unique `\\cite{}` keys; all have corresponding `\\bibitem{}` entries; 0 uncited bibitems.
 
 ---
 
-### ❌ **4. Warburg Section (Line 346)**
+## ✅ RESOLVED: STAGE FIGURE–TEXT FDR SCOPE ALIGNMENT
 
-**Current text:**
-> "The Warburg shift can also be read as **reduced investment in differentiation-specific regulatory order**. Maintaining a low-entropy differentiated state requires continuous ATP to suppress transcriptional noise. Dedifferentiation moves cells toward a higher-entropy state, reducing local regulatory overhead while increasing organism-level burden."
+### Resolution Status
 
-**Problem:** This entire passage contradicts the TCGA data showing tumors can maintain BOTH high proliferation AND high coherence.
+The manuscript (Section 10, Stage-Stratified Analysis, ~line 745) states:
 
-**Recommended fix:**
-> "The Warburg shift enables **metabolic autonomy and expansion beyond homeostatic limits**. By switching to aerobic glycolysis, cancer cells decouple from systemic metabolic coordination and generate excess capacity to sustain both rapid proliferation and maintained (or elevated) internal coherence. This expanded metabolic state—observed empirically as positive correlation between proliferation and coherence markers—imposes increased organism-level burden, manifesting as cachexia."
+> "11/12 circadian-stage tests were non-significant after global FDR correction, with one borderline signal (TCGA-HNSC Spearman trend, **q ≈ 0.050**)."
 
----
+This q ≈ 0.050 value comes from the **global BH-FDR** across all ~200+ tests in `master_fdr_results.csv` (computed by `tcga_stage_analysis.py`). In that global pool, the HNSC circadian Spearman p=0.0287 gets q=0.04998 — essentially borderline FDR-significant.
 
-### ❌ **5. Cachexia Section (Line 354)**
+Within-family BH correction **across only the 6 circadian Spearman tests** yields **q=0.172** for HNSC, while the **global** BH-FDR across the full pooled analysis set yields **q≈0.050** (as reported in `master_fdr_results.csv` and the pre-specified evidence table).
 
-**Current text:**
-> "This is not a violation of thermodynamics. It is a redistribution across scales: local proliferative advantage with **reduced differentiation investment** is coupled to global host burden and inflammatory wasting."
+### Why This Matters
 
-**Problem:** Same issue.
+These are both valid corrections but applied to different test pools. The manuscript language explicitly says “global FDR correction”, so the stage Spearman summary plot should report the global q-values (and, if desired, optionally note the within-family q-values for transparency).
 
-**Recommended fix:**
-> "This is not a violation of thermodynamics. It is a redistribution across scales: local **metabolic expansion** enabling simultaneous high proliferation and maintained coherence (Budget Escape) is coupled to global host burden and inflammatory wasting."
+### Applied Fix
+
+`generate_manuscript_figures.py` now includes a `_load_global_stage_qvalues()` helper that pulls the global q-values from `master_fdr_results.csv`. The current `results/stage_circadian_spearman_summary.png` shows HNSC at approximately `q=0.05`, matching manuscript wording and correction scope.
 
 ---
 
-### ⚠️ **6. Limitations Section (Line 823) - MINOR**
+## ✅ RESOLVED: TUMOR–NORMAL P-VALUE / FIGURE SYNC
 
-**Current text:**
-> "The Landauer framing is used as an organizing guide for distinguishing energetic replication cost from **reduced investment in identity-forming information**; host metabolic burden and cachexia remain explicitly multi-mechanism processes."
+### Resolution Status
 
-**Problem:** This might be acceptable in the Limitations section (since it's discussing the interpretive framework), but could be clarified for consistency.
+The manuscript Tumor-vs-Matched-Normal subsection (Section 10, ~lines 649–676), manuscript-facing figure (`results/tumor_normal_circadian_cv_paired.png`), and `experiments/tcga/tumor_normal_comparison.csv` are now aligned for circadian-CV paired Wilcoxon values.
 
-**Recommended fix (optional):**
-> "The Landauer framing is used as an organizing guide for understanding how cells can decouple from organism-level identity-enforcement constraints while **expanding local metabolic capacity beyond homeostatic limits**; host metabolic burden and cachexia remain explicitly multi-mechanism processes."
+For `Circadian_CV` paired Wilcoxon tests, the CSV currently contains:
 
----
+| Cohort | Manuscript/Figure $p$ | Current CSV `wilcoxon_p` |
+|---|---:|---:|
+| TCGA-LUAD | $2.28\\times10^{-6}$ | $2.28\\times10^{-6}$ |
+| TCGA-BRCA | $5.13\\times10^{-9}$ | $5.13\\times10^{-9}$ |
+| TCGA-HNSC | $7.0\\times10^{-7}$ | $7.02\\times10^{-7}$ (matches) |
+| TCGA-LUSC | $8.6\\times10^{-7}$ | $8.61\\times10^{-7}$ (matches) |
+| TCGA-COAD | “not significant” | $0.564$ (still non-significant) |
 
-## SUMMARY TABLE
+### Applied Fix
 
-| Location | Line | Issue | Severity | Fix Required? |
-|----------|------|-------|----------|---------------|
-| Abstract | 55 | "reduced differentiation investment" | **CRITICAL** | ✅ YES |
-| Introduction (Distinction) | 193 | "investment...is reduced" | **CRITICAL** | ✅ YES |
-| Introduction (Distinction) | 196 | "reduced local differentiation investment" | **CRITICAL** | ✅ YES |
-| Warburg section | 346 | "reduced investment in differentiation-specific regulatory order" | **HIGH** | ✅ YES |
-| Cachexia section | 354 | "reduced differentiation investment" | **HIGH** | ✅ YES |
-| Limitations section | 823 | "reduced investment in identity-forming information" | **MINOR** | ⚠️ OPTIONAL |
+- Copied latest tumor-normal figure artifacts from `experiments/tcga/figures/` into `results/`.
+- Updated manuscript paired-Wilcoxon circadian-CV values for LUAD and BRCA to match the current CSV output.
 
 ---
 
-## RECOMMENDATION
+## ✅ RESOLVED: SURVIVAL q-VALUE SCOPE CONSISTENCY
 
-**Action required before submission:**
+### Resolution Status
 
-1. **Fix the Abstract** (Line 55) - This is the MOST CRITICAL fix since it's the first thing reviewers read
-2. **Fix Introduction** (Lines 193, 196) - Also critical since it sets up the conceptual framework
-3. **Fix Warburg section** (Line 346) - High priority since it directly addresses metabolic reprogramming
-4. **Fix Cachexia section** (Line 354) - High priority since cachexia is the key cost-externalization mechanism
-5. **Consider revising Limitations** (Line 823) - Lower priority but would improve consistency
+`experiments/tcga/survival_logrank_results.csv` contains two different BH-FDR corrections:
+- `q_value_test_family`: BH within each test family (6 AM-vs-DC tests; 6 Q1-vs-Q4 tests)
+- `q_value_all_survival_tests`: BH across all 12 survival tests (6 AM-vs-DC + 6 Q1-vs-Q4)
 
-**Estimated revision time:** 30-45 minutes
+The manuscript narrative text, pre-specified evidence table, and survival summary plot now consistently use `q_value_all_survival_tests` (BH across all 12 survival tests).
 
-**Once fixed, the paper will have:**
-- ✅ Internally consistent "Budget Escape" narrative
-- ✅ Alignment between theory (Section 6), data (Section 14), and implications (Section 10)
-- ✅ No contradictions between Abstract/Introduction and the empirical findings
+### Concrete Example (AM vs DC)
+
+| Cohort | $p$ | q (within AM-vs-DC family, m=6) | q (all survival tests, m=12) |
+|---|---:|---:|---:|
+| TCGA-SKCM | 0.0011 | 0.0066 | 0.0132 |
+| TCGA-LUAD | 0.0489 | 0.147 | 0.294 |
+
+### Applied Fix
+
+- Updated Abstract, intro preview, survival results, and implications text to:
+  - SKCM AM-vs-DC: $q=0.0132$
+  - LUAD AM-vs-DC: $q=0.294$
+- Updated survival captions to explicitly state BH correction across all 12 survival tests.
+- Kept the evidence table aligned to the same q-scope.
 
 ---
 
-## POSITIVE NOTES
+## ✅ RESOLVED: ARTIFACT SYNC + CANONICAL MANUSCRIPT FIGURE DIRECTORY
 
-1. **Section 6 rewrite is excellent** - Clear, data-driven, and properly framed
-2. **Section 10 implication is clear and concise**
-3. **No $B_{\text{ctrl}}$ remnants** - Terminology has been updated consistently
-4. **The pivot logic is sound** - Turning a "failed hypothesis" into a "data-driven discovery" is scientifically honest and strengthens the paper
+The repository currently contains duplicate PNG basenames under both:
+- `results/` (used by the manuscript via `\\includegraphics{results/...}`), and
+- `experiments/tcga/figures/` (direct outputs of several TCGA scripts).
+
+### Applied Fix
+
+- Added deterministic sync script: `experiments/tcga/sync_manuscript_artifacts.py`
+- Script behavior:
+  - Parses manuscript `\\includegraphics{...}` entries
+  - Syncs shared TCGA basenames between `results/` and `experiments/tcga/figures/`
+  - Resolves conflicts by deterministic policy (newer mtime wins; tie-break to `results/`)
+  - Optionally rewrites manuscript paths to canonical `results/...` form (`--rewrite-tex`)
+- Executed sync + rewrite:
+  - `python experiments/tcga/sync_manuscript_artifacts.py --rewrite-tex`
+  - `control_budget_combined.png` is now referenced from `results/` (canonicalized)
+  - Bytewise-different duplicate PNG basenames between `results/` and `experiments/tcga/figures/`: **0**
+
+### Provenance Contract Implemented
+
+The sync script now emits a provenance manifest:
+- `paper/figure_provenance.csv`
+
+For each manuscript figure, it records:
+- `figure_path`
+- `source_inputs`
+- `generator_script`
+- `figure_timestamp_utc`
+- `figure_sha256`
 
 ---
 
-## NEXT STEPS
+## ✅ DATA–TEXT CROSS-CHECKS (all verified)
 
-1. Apply the 5 critical fixes listed above
-2. Re-read the Abstract, Introduction (Section 4), and Thermodynamics (Section 7) for any remaining "reduction" language
-3. Verify that the narrative flows: Normal tissue → constrained by budget → Malignant tissue → expands budget → Host pays the cost (cachexia)
-4. Final check: Does every mention of cachexia link to "metabolic expansion" rather than "reduced investment"?
+| Claim in Manuscript | Data Source | Match? |
+|---|---|---|
+| Circadian CV–PD-L1: ρ = −0.381 (SKCM) | `multicancer_correlations.csv` | ✅ |
+| Circadian CV–PD-L1: ρ = −0.303 (LUAD) | `multicancer_correlations.csv` | ✅ |
+| 100% replication across 6 cohorts (all FDR q<0.05) | `multicancer_correlations.csv` | ✅ |
+| B2M–PD-L1: ρ = +0.760 (SKCM) | `hypothesis1_correlations.csv` | ✅ |
+| AM-vs-DC survival SKCM: p=0.0011, q=0.0132 (all 12 tests) | `survival_logrank_results.csv` | ✅ |
+| AM-vs-DC survival LUAD: p=0.049, q=0.294 (all 12 tests) | `survival_logrank_results.csv` | ✅ |
+| Circadian CV quartiles: no FDR-significant survival | `survival_logrank_results.csv` | ✅ |
+| Tumor < Normal circadian CV in 4/5 types | `tumor_normal_comparison.csv` | ✅ |
+| Cox adjusted AM-vs-DC SKCM: HR=0.507, q=0.069 | `robustness_primary_tests.csv` | ✅ |
+| Cox adjusted AM-vs-DC LUAD: HR=0.288, q=0.045 | `robustness_primary_tests.csv` | ✅ |
+| PD-L1×clock interaction SKCM: HR=0.217, q=0.045 | `robustness_primary_tests.csv` | ✅ |
+| Therapy table: ATRA → cancer=0, control → cancer=376 | `scenario_comparison.json` | ✅ |
 
-Once these fixes are applied, the paper will be **internally consistent** and ready for submission.
+---
+
+## ✅ FIGURE–DATA CROSS-CHECKS (all verified)
+
+| Figure | Data Source | Match? |
+|---|---|---|
+| `survival_test_qvalue_summary.png` | `survival_logrank_results.csv` | ✅ |
+| `robustness_primary_hr_forest.png` | `robustness_primary_tests.csv` | ✅ |
+| `immune_subtype_prevalence_stacked.png` | `immune_subtype_comparison.csv` | ✅ |
+| `multicancer_circadian_cv_forest.png` | `multicancer_correlations.csv` | ✅ |
+| `multicancer_correlation_heatmap.png` | `multicancer_correlations.csv` | ✅ |
+| `survival_boundary_failure.png` | `survival_logrank_results.csv` | ✅ |
+| `tumor_normal_circadian_cv_paired.png` | `tumor_normal_comparison.csv` | ✅ synced to current CSV (Section 4 resolved) |
+| `stage_circadian_spearman_summary.png` | `master_fdr_results.csv` | ✅ global q-values (HNSC q≈0.050) |
+
+---
+
+## ✅ CODE QUALITY NOTES
+
+- `tcga_extract.py` has been refactored to use `tcga_config.py` helpers (no more hardcoded credentials in the script itself)
+- `tcga_tumor_normal.py` updated with proper sample deduplication (priority: Primary > Recurrent > Metastatic) and separated paired (Wilcoxon) from unpaired (Mann-Whitney) tests
+- `test_therapy.py` has a new test (`test_differentiation_therapy_enforces_growth_arrest_even_with_high_global_division`) validating per-cell growth arrest
+- `generate_manuscript_figures.py` is a clean figure-generation script reading from CSV outputs
+- `sync_manuscript_artifacts.py` adds deterministic manuscript-figure sync and provenance generation (`paper/figure_provenance.csv`)
+- Old root-level `.tex` copies removed; canonical manuscript now in `paper/` directory
+
+---
+
+## ⚠️ INTERPRETATION / REPRODUCIBILITY RISKS (NON-CLINICAL)
+
+These are not “errors” but important constraints on interpretation and reproducibility:
+
+- **Bulk RNA-seq CV is a proxy:** “Circadian CV” here is within-sample cross-gene dispersion in bulk RNA-seq, not a direct measure of rhythmic phase coherence; the manuscript correctly notes this limitation.
+- **Survival is natural-history association:** TCGA lacks immunotherapy response endpoints and treatment is heterogeneous; subtype–survival associations are not evidence of checkpoint blockade efficacy.
+- **Definitional coupling in subtype analyses:** The Active Masking definition includes ARNTL/PER1, so downstream CV differences are internal-consistency evidence, not independent validation.
+- **Multiple-testing scope must be explicit:** Several outputs provide both within-family and global q-values; mixing them without explicit scope creates avoidable inconsistencies (see Sections 3 and 5).
+- **Cox PH sensitivity:** The robustness pipeline includes PH diagnostics; if broad non-proportionality is present, Cox coefficients should be treated as time-averaged associations.
+
+---
+
+## SUMMARY
+
+| Category | Status |
+|---|---|
+| "Reduced investment" language | ✅ All 5+1 passages fixed |
+| Budget Escape narrative flow | ✅ Consistent Abstract → Conclusion |
+| Manuscript structural integrity (LaTeX) | ✅ Refs/cites/figure paths resolve |
+| Data–text numerical accuracy | ✅ Synced to current CSV outputs and consistent q-scope reporting |
+| Figure–data consistency | ✅ Stage and tumor-normal figures aligned with stated data sources |
+| Code refactoring | ✅ Improved since last review |
+
+**Action required:** none (blocking consistency issues resolved).

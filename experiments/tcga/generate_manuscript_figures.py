@@ -14,6 +14,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.transforms import blended_transform_factory
 import numpy as np
 import pandas as pd
 
@@ -66,6 +67,32 @@ def _read_csv(name: str) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Missing required file: {path}")
     return pd.read_csv(path)
+
+
+def _load_global_stage_qvalues() -> dict[str, float]:
+    """
+    Return global BH-FDR q-values for circadian stage Spearman tests.
+
+    These come from master_fdr_results.csv where FDR is computed across the
+    full analysis pool, matching manuscript language ("global FDR correction").
+    """
+    path = SCRIPT_DIR / "master_fdr_results.csv"
+    if not path.exists():
+        return {}
+
+    df = pd.read_csv(path)
+    required = {"source", "cancer_type", "test_description", "q_value"}
+    if not required.issubset(df.columns):
+        return {}
+
+    stage = df[df["source"] == "stage_analysis"].copy()
+    stage = stage[stage["test_description"] == "Circadian CV_spearman_stage_trend"].copy()
+    if stage.empty:
+        return {}
+
+    stage["q_value"] = pd.to_numeric(stage["q_value"], errors="coerce")
+    stage = stage.dropna(subset=["q_value"])
+    return dict(zip(stage["cancer_type"], stage["q_value"]))
 
 
 def plot_survival_test_qvalue_summary() -> Path:
@@ -148,6 +175,16 @@ def plot_survival_test_qvalue_summary() -> Path:
     ax.legend(frameon=False, loc="upper right")
     ax.set_ylim(0, max(1.8, float(np.nanmax(df["neglog10_q"]) + 0.8)))
     ax.grid(axis="y", alpha=0.25)
+    ax.text(
+        0.01,
+        0.97,
+        "* = FDR-significant (q < 0.05)",
+        transform=ax.transAxes,
+        ha="left",
+        va="top",
+        fontsize=8.8,
+        bbox={"facecolor": "white", "alpha": 0.8, "edgecolor": "none"},
+    )
     fig.tight_layout()
 
     out = RESULTS_DIR / "survival_test_qvalue_summary.png"
@@ -190,7 +227,7 @@ def plot_robustness_hr_forest() -> Path:
     xerr_low = np.maximum(x - df["ci95_low"].to_numpy(), 1e-9)
     xerr_high = np.maximum(df["ci95_high"].to_numpy() - x, 1e-9)
 
-    fig, ax = plt.subplots(figsize=(13, 6.3))
+    fig, ax = plt.subplots(figsize=(14.2, 7.2))
     for i in range(len(df)):
         ax.errorbar(
             x[i],
@@ -209,6 +246,7 @@ def plot_robustness_hr_forest() -> Path:
     ax.set_xscale("log")
     ax.set_yticks(y_pos)
     ax.set_yticklabels(df["row_label"])
+    ax.tick_params(axis="y", labelsize=8, pad=5)
     ax.set_xlabel("Hazard Ratio (log scale, 95% CI)")
     ax.set_title("Clinical Robustness Models: Hazard Ratios by Test and Cohort")
 
@@ -216,31 +254,35 @@ def plot_robustness_hr_forest() -> Path:
     x_max = float(np.nanmax(df["ci95_high"]) * 1.35)
     ax.set_xlim(x_min, x_max)
 
-    x_text = x_max / (x_max / x_min) ** 0.02
+    right_text = blended_transform_factory(ax.transAxes, ax.transData)
     for i, (_, row) in enumerate(df.iterrows()):
         q_txt = f"{row['q_value']:.3f}" if pd.notna(row["q_value"]) else "NA"
         p_txt = f"{row['p_value']:.3g}" if pd.notna(row["p_value"]) else "NA"
+        y_offset = 0.16 if i % 2 == 0 else -0.16
         ax.text(
-            x_text,
-            y_pos[i],
+            1.01,
+            y_pos[i] + y_offset,
             f"p={p_txt}, q={q_txt}",
-            ha="right",
+            transform=right_text,
+            ha="left",
             va="center",
             fontsize=8.5,
             color="#2f2f2f",
+            clip_on=False,
         )
 
     ax.grid(axis="x", which="both", alpha=0.2)
     ax.text(
-        0.02,
-        0.03,
+        0.01,
+        0.98,
         "Green points are FDR-significant (q < 0.05).",
         transform=ax.transAxes,
         fontsize=9,
         ha="left",
-        va="bottom",
+        va="top",
+        bbox={"facecolor": "white", "alpha": 0.85, "edgecolor": "none"},
     )
-    fig.tight_layout()
+    fig.subplots_adjust(left=0.30, right=0.82, top=0.90, bottom=0.12)
 
     out = RESULTS_DIR / "robustness_primary_hr_forest.png"
     fig.savefig(out, dpi=300, facecolor="white", bbox_inches="tight")
@@ -307,7 +349,11 @@ def plot_stage_circadian_spearman() -> Path:
     df = df.sort_values("project")
     df["p_value"] = pd.to_numeric(df["p_value"], errors="coerce")
     df["statistic"] = pd.to_numeric(df["statistic"], errors="coerce")
-    df["q_value"] = _bh_fdr(df["p_value"])
+    global_q = _load_global_stage_qvalues()
+    if global_q:
+        df["q_value"] = df["cancer_type"].map(global_q)
+    else:
+        df["q_value"] = _bh_fdr(df["p_value"])
 
     y = np.arange(len(df))[::-1]
     colors = np.where(df["q_value"] < 0.05, "#2c7fb8", "#9e9e9e")
@@ -340,7 +386,7 @@ def plot_stage_circadian_spearman() -> Path:
     ax.text(
         0.01,
         0.03,
-        "Blue bars: q < 0.05 after BH correction within circadian stage-trend tests.",
+        "Blue bars: q < 0.05 after global BH correction (master_fdr_results.csv).",
         transform=ax.transAxes,
         fontsize=8.8,
         ha="left",

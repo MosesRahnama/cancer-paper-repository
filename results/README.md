@@ -27,6 +27,7 @@ This folder stores generated artifacts from simulation runs.
 - `stage_circadian_cv_boxplot.png`
 - `stage_circadian_spearman_summary.png`
 - `robustness_primary_hr_forest.png`
+- `control_budget_combined.png`
 
 ## Phase-2 Sweep Artifacts
 - `phase2_baseline_seed_sweep.json`
@@ -35,5 +36,12 @@ This folder stores generated artifacts from simulation runs.
 - `phase2_unmasking_seed_sweep.json`
 - `phase2_unmasking_kappa_summary.png`
 - `phase2_unmasking_cancer_summary.png`
+
+For manuscript reproducibility, run:
+- `python experiments/tcga/sync_manuscript_artifacts.py --rewrite-tex`
+
+This synchronizes TCGA duplicate figure basenames to `results/` and writes
+`paper/figure_provenance.csv` with figure hashes, timestamps, input sources, and
+generator scripts.
 
 All outputs are model-derived and illustrative; they are not clinical predictions.

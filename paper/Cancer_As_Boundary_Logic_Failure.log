@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.18)  11 FEB 2026 17:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.18)  11 FEB 2026 19:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -793,7 +793,7 @@ File: tikzlibrarybackgrounds.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@layerbox@background=\box98
 \pgf@layerboxsaved@background=\box99
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 30.
+Package hyperref Info: Option `colorlinks' set `true' on input line 37.
 
 (c:/texlive/2024/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
@@ -802,24 +802,24 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 (./Cancer_As_Boundary_Logic_Failure.aux)
 \openout1 = `Cancer_As_Boundary_Logic_Failure.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 46.
-LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -855,7 +855,7 @@ LaTeX Font Info:    ... okay on input line 46.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring ON on input line 46.
+Package hyperref Info: Link coloring ON on input line 53.
 (./Cancer_As_Boundary_Logic_Failure.out)
 (./Cancer_As_Boundary_Logic_Failure.out)
 \@outlinefile=\write4
@@ -884,13 +884,13 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Info: Redefining \microtypecontext on input line 46.
-Package microtype Info: Applying patch `item' on input line 46.
-Package microtype Info: Applying patch `toc' on input line 46.
-Package microtype Info: Applying patch `eqnum' on input line 46.
-Package microtype Info: Applying patch `footnote' on input line 46.
-Package microtype Info: Applying patch `verbatim' on input line 46.
-LaTeX Info: Redefining \microtypesetup on input line 46.
+LaTeX Info: Redefining \microtypecontext on input line 53.
+Package microtype Info: Applying patch `item' on input line 53.
+Package microtype Info: Applying patch `toc' on input line 53.
+Package microtype Info: Applying patch `eqnum' on input line 53.
+Package microtype Info: Applying patch `footnote' on input line 53.
+Package microtype Info: Applying patch `verbatim' on input line 53.
+LaTeX Info: Redefining \microtypesetup on input line 53.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -903,7 +903,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 49.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 56.
 
 
 (c:/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -912,7 +912,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (c:/texlive/2024/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 49.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 56.
 
 
 (c:/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -925,432 +925,429 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+ [1
 
-Overfull \hbox (6.49261pt too wide) in paragraph at lines 55--56
-\T1/cmr/m/n/10.95 junction de-cou-pling, signaling-entropy el-e-va-tion (SCENT/
-mRNAsi), Warburg-associated
- []
-
-[1
-
-{c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-(./Cancer_As_Boundary_Logic_Failure.toc [3])
+{c:/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(./Cancer_As_Boundary_Logic_Failure.toc [2])
 \tf@toc=\write5
 \openout5 = `Cancer_As_Boundary_Logic_Failure.toc'.
 
- [4]
-<../results/survival_test_qvalue_summary.png, id=314, 894.9435pt x 389.0535pt>
+ [3] [4]
+<../results/survival_test_qvalue_summary.png, id=330, 894.9435pt x 389.0535pt>
 File: ../results/survival_test_qvalue_summary.png Graphic file (type png)
 <use ../results/survival_test_qvalue_summary.png>
 Package pdftex.def Info: ../results/survival_test_qvalue_summary.png  used on i
-nput line 88.
+nput line 96.
 (pdftex.def)             Requested size: 446.26582pt x 193.99791pt.
- [5] [6
+ [5
 pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.111 T
-       his interpretation is consistent with atavistic perspectives~\cite{da...
- <../results/survival_test_qvalue_summary.png>] [7]
-<../results/multicancer_circadian_cv_forest.png, id=372, 570.933pt x 353.1594pt
+l.118 
+       <../results/survival_test_qvalue_summary.png>] [6]
+<../results/multicancer_circadian_cv_forest.png, id=367, 570.933pt x 353.1594pt
 >
 File: ../results/multicancer_circadian_cv_forest.png Graphic file (type png)
 <use ../results/multicancer_circadian_cv_forest.png>
 Package pdftex.def Info: ../results/multicancer_circadian_cv_forest.png  used o
-n input line 133.
+n input line 141.
 (pdftex.def)             Requested size: 446.26582pt x 276.05597pt.
- [8
+ [7
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.155 
-       <../results/multicancer_circadian_cv_forest.png>] [9]
-Overfull \hbox (2.67407pt too wide) in paragraph at lines 196--197
+l.163 
+       <../results/multicancer_circadian_cv_forest.png>] [8]
+Overfull \hbox (2.67407pt too wide) in paragraph at lines 204--205
 []\T1/cmr/m/n/12 In later sec-tions we use this to in-ter-pret metabolic re-pro
 -gram-ming [[], []] and cachexia [[],
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 233--234
+Underfull \hbox (badness 10000) in paragraph at lines 241--242
 []|\T1/cmr/m/n/10.95 Unbounded re-cur-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 235--236
+Underfull \hbox (badness 10000) in paragraph at lines 243--244
 []|\T1/cmr/m/n/10.95 Termination pred-i-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 236--236
+Underfull \hbox (badness 10000) in paragraph at lines 244--244
 []|\T1/cmr/bx/n/10.95 Termination check: \T1/cmr/m/n/10.95 p53,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 237--238
+Underfull \hbox (badness 10000) in paragraph at lines 245--246
 []|\T1/cmr/m/n/10.95 System desta-bi-liza-
  []
 
 
-Underfull \hbox (badness 2073) in paragraph at lines 238--238
+Underfull \hbox (badness 2073) in paragraph at lines 246--246
 []|\T1/cmr/bx/n/10.95 Resolution: \T1/cmr/m/n/10.95 Ac-cept un-de-cid-
  []
 
-[10] [11
+[9] [10
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.262 \begin{equation}
+l.270 \begin{equation}
                       ]
-<../experiments/tcga/figures/control_budget_combined.png, id=430, 611.886pt x 5
-22.753pt>
-File: ../experiments/tcga/figures/control_budget_combined.png Graphic file (typ
-e png)
-<use ../experiments/tcga/figures/control_budget_combined.png>
-Package pdftex.def Info: ../experiments/tcga/figures/control_budget_combined.pn
-g  used on input line 276.
+<../results/control_budget_combined.png, id=426, 611.886pt x 522.753pt>
+File: ../results/control_budget_combined.png Graphic file (type png)
+<use ../results/control_budget_combined.png>
+Package pdftex.def Info: ../results/control_budget_combined.png  used on input 
+line 284.
 (pdftex.def)             Requested size: 469.75502pt x 401.32457pt.
- [12] [13
+ [11] [12
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.296 
-       <../experiments/tcga/figures/control_budget_combined.png>]
-Overfull \hbox (9.34462pt too wide) in paragraph at lines 309--310
+l.304 
+       <../results/control_budget_combined.png>]
+Overfull \hbox (9.34462pt too wide) in paragraph at lines 317--318
 []\T1/cmr/m/n/12 At the molec-u-lar scale, core clock com-po-nents CLOCK and BM
 AL1 have tumor-suppressive
  []
 
-[14
+[13
 pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.314 
-      ] [15] [16] [17]
-Underfull \hbox (badness 10000) in paragraph at lines 458--458
+l.322 
+      ] [14] [15] [16]
+Underfull \hbox (badness 10000) in paragraph at lines 466--466
 []|\T1/cmr/m/n/10.95 Identity align-ment
  []
 
 
-Underfull \hbox (badness 2689) in paragraph at lines 458--458
+Underfull \hbox (badness 2689) in paragraph at lines 466--466
 []|\T1/cmr/m/n/10.95 Differentiation state /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 459--459
+Underfull \hbox (badness 10000) in paragraph at lines 467--467
 []|\T1/cmr/m/n/10.95 Signaling den-sity
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 459--460
+Underfull \hbox (badness 10000) in paragraph at lines 467--468
 []|\T1/cmr/m/n/10.95 Connexin ex-pres-sion [[]],
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 460--460
+Underfull \hbox (badness 10000) in paragraph at lines 468--468
 []|\T1/cmr/m/n/10.95 Temporal co-or-di-na-
  []
 
 
-Underfull \hbox (badness 3792) in paragraph at lines 460--460
+Underfull \hbox (badness 3792) in paragraph at lines 468--468
 []|\T1/cmr/m/n/10.95 Circadian gene co-her-
  []
 
 
-Underfull \hbox (badness 2269) in paragraph at lines 460--461
+Underfull \hbox (badness 2269) in paragraph at lines 468--469
 []|\T1/cmr/m/n/10.95 Bmal1/Clock/Per ex-pres-sion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 463--464
+Underfull \hbox (badness 10000) in paragraph at lines 471--472
 []|\T1/cmr/m/n/10.95 Voltage-sensitive flu-o-res-cent
  []
 
-[18
+[17
 pdfTeX warning (ext4): destination with the same identifier (name{table.3}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.467 \end{table}
-                 ] [19
+l.475 \end{table}
+                 ] [18
 pdfTeX warning (ext4): destination with the same identifier (name{table.4}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.486     \item \textbf
+l.494     \item \textbf
                        {Neoantigen presentation:} Personalized cancer vaccin...
-] [20]
-Overfull \hbox (19.5436pt too wide) in paragraph at lines 529--530
+] [19]
+Overfull \hbox (19.5436pt too wide) in paragraph at lines 537--538
 []\T1/cmr/bx/n/12 Circadian dis-rup-tion pre-cedes ma-lig-nancy: \T1/cmr/m/n/12
  Cir-ca-dian dis-rup-tion should raise boundary-
  []
 
-[21]
-Overfull \hbox (1.02522pt too wide) in paragraph at lines 561--562
-\T1/cmr/m/n/12 state: interferon-$\OML/cmm/m/it/12 ^^M$ \T1/cmr/m/n/12 sig-nal-
-ing from in-fil-trat-ing T cells can co-activate PD-L1 and other immune-
- []
-
-[22] [23]
-Underfull \hbox (badness 10000) in paragraph at lines 602--602
-[]\T1/cmr/m/n/12 Table 5: []Spearman cor-re-la-tions for Hy-poth-e-sis 1 tar-ge
-t genes in TCGA
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 602--602
-\T1/cmr/m/n/12 tu-mor sam-ples (dis-cov-ery co-horts). Data source: ISB-CGC Big
--Query
- []
-
-<../results/multicancer_correlation_heatmap.png, id=576, 695.4783pt x 688.4922p
-t>
-File: ../results/multicancer_correlation_heatmap.png Graphic file (type png)
-<use ../results/multicancer_correlation_heatmap.png>
-Package pdftex.def Info: ../results/multicancer_correlation_heatmap.png  used o
-n input line 608.
-(pdftex.def)             Requested size: 469.75502pt x 465.03786pt.
-[24
+[20] (./tables/evidence_table_prespecified.tex) [21] [22
 pdfTeX warning (ext4): destination with the same identifier (name{table.5}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.612 
+l.571     \item T
+                 CGA-BRCA: $\rho = -0.222$, $n = 1{,}113$]
+Overfull \hbox (1.02522pt too wide) in paragraph at lines 577--578
+\T1/cmr/m/n/12 state: interferon-$\OML/cmm/m/it/12 ^^M$ \T1/cmr/m/n/12 sig-nal-
+ing from in-fil-trat-ing T cells can co-activate PD-L1 and other immune-
+ []
+
+[23]
+Underfull \hbox (badness 10000) in paragraph at lines 618--618
+[]\T1/cmr/m/n/12 Table 6: []Spearman cor-re-la-tions for Hy-poth-e-sis 1 tar-ge
+t genes in TCGA
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 618--618
+\T1/cmr/m/n/12 tu-mor sam-ples (dis-cov-ery co-horts). Data source: ISB-CGC Big
+-Query
+ []
+
+<../results/multicancer_correlation_heatmap.png, id=582, 695.4783pt x 688.4922p
+t>
+File: ../results/multicancer_correlation_heatmap.png Graphic file (type png)
+<use ../results/multicancer_correlation_heatmap.png>
+Package pdftex.def Info: ../results/multicancer_correlation_heatmap.png  used o
+n input line 624.
+(pdftex.def)             Requested size: 469.75502pt x 465.03786pt.
+[24
+pdfTeX warning (ext4): destination with the same identifier (name{table.6}) has
+ been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.628 
       ]
-<../results/hypothesis1_TCGA_SKCM.png, id=583, 1149.093pt x 711.8595pt>
+<../results/hypothesis1_TCGA_SKCM.png, id=589, 1149.093pt x 711.8595pt>
 File: ../results/hypothesis1_TCGA_SKCM.png Graphic file (type png)
 <use ../results/hypothesis1_TCGA_SKCM.png>
 Package pdftex.def Info: ../results/hypothesis1_TCGA_SKCM.png  used on input li
-ne 615.
+ne 631.
 (pdftex.def)             Requested size: 469.75502pt x 291.01704pt.
  [25
 pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.619 
+l.635 
        <../results/multicancer_correlation_heatmap.png>]
-<../results/hypothesis1_TCGA_LUAD.png, id=590, 1148.8521pt x 711.8595pt>
+<../results/hypothesis1_TCGA_LUAD.png, id=596, 1148.8521pt x 711.8595pt>
 File: ../results/hypothesis1_TCGA_LUAD.png Graphic file (type png)
 <use ../results/hypothesis1_TCGA_LUAD.png>
 Package pdftex.def Info: ../results/hypothesis1_TCGA_LUAD.png  used on input li
-ne 622.
+ne 638.
 (pdftex.def)             Requested size: 469.75502pt x 291.07135pt.
  [26
 pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.626 
+l.642 
        <../results/hypothesis1_TCGA_SKCM.png>] [27
 pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.642 
+l.658 
        <../results/hypothesis1_TCGA_LUAD.png>]
-<../results/tumor_normal_circadian_cv_paired.png, id=605, 1149.093pt x 711.8595
+<../results/tumor_normal_circadian_cv_paired.png, id=611, 1149.093pt x 711.8595
 pt>
 File: ../results/tumor_normal_circadian_cv_paired.png Graphic file (type png)
 <use ../results/tumor_normal_circadian_cv_paired.png>
 Package pdftex.def Info: ../results/tumor_normal_circadian_cv_paired.png  used 
-on input line 645.
+on input line 661.
 (pdftex.def)             Requested size: 469.75502pt x 291.01704pt.
-<../results/tumor_normal_circadian_cv_summary.png, id=606, 715.473pt x 426.1521
+<../results/tumor_normal_circadian_cv_summary.png, id=612, 715.473pt x 426.1521
 pt>
 File: ../results/tumor_normal_circadian_cv_summary.png Graphic file (type png)
 <use ../results/tumor_normal_circadian_cv_summary.png>
 Package pdftex.def Info: ../results/tumor_normal_circadian_cv_summary.png  used
- on input line 652.
+ on input line 668.
 (pdftex.def)             Requested size: 422.77664pt x 251.8112pt.
  [28
 pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.656 
+l.672 
        <../results/tumor_normal_circadian_cv_paired.png>]
-<../results/immune_subtype_prevalence_stacked.png, id=616, 823.878pt x 396.2805
+<../results/immune_subtype_prevalence_stacked.png, id=622, 823.878pt x 396.2805
 pt>
 File: ../results/immune_subtype_prevalence_stacked.png Graphic file (type png)
 <use ../results/immune_subtype_prevalence_stacked.png>
 Package pdftex.def Info: ../results/immune_subtype_prevalence_stacked.png  used
- on input line 671.
+ on input line 687.
 (pdftex.def)             Requested size: 422.77664pt x 203.35205pt.
  [29
 pdfTeX warning (ext4): destination with the same identifier (name{figure.8}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.675 
+l.691 
        <../results/tumor_normal_circadian_cv_summary.png>]
-<../results/immune_subtype_circadian_cv.png, id=624, 1149.093pt x 713.3049pt>
+<../results/immune_subtype_circadian_cv.png, id=630, 1149.093pt x 713.3049pt>
 File: ../results/immune_subtype_circadian_cv.png Graphic file (type png)
 <use ../results/immune_subtype_circadian_cv.png>
 Package pdftex.def Info: ../results/immune_subtype_circadian_cv.png  used on in
-put line 678.
+put line 694.
 (pdftex.def)             Requested size: 469.75502pt x 291.60794pt.
  [30
 pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.682 
+l.698 
        <../results/immune_subtype_prevalence_stacked.png>]
-<../results/immune_subtype_boundary_scatter.png, id=630, 642.9621pt x 570.6921p
+<../results/immune_subtype_boundary_scatter.png, id=636, 642.9621pt x 570.6921p
 t>
 File: ../results/immune_subtype_boundary_scatter.png Graphic file (type png)
 <use ../results/immune_subtype_boundary_scatter.png>
 Package pdftex.def Info: ../results/immune_subtype_boundary_scatter.png  used o
-n input line 685.
+n input line 701.
 (pdftex.def)             Requested size: 422.77664pt x 375.26465pt.
  [31
 pdfTeX warning (ext4): destination with the same identifier (name{figure.10}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.689 
+l.705 
        <../results/immune_subtype_circadian_cv.png>] [32
 pdfTeX warning (ext4): destination with the same identifier (name{figure.11}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.700 \end{itemize}
+l.716 \end{itemize}
                     <../results/immune_subtype_boundary_scatter.png>]
-<../results/survival_boundary_failure.png, id=645, 1221.363pt x 733.5405pt>
+<../results/survival_boundary_failure.png, id=651, 1221.363pt x 733.5405pt>
 File: ../results/survival_boundary_failure.png Graphic file (type png)
 <use ../results/survival_boundary_failure.png>
 Package pdftex.def Info: ../results/survival_boundary_failure.png  used on inpu
-t line 706.
+t line 724.
 (pdftex.def)             Requested size: 469.75502pt x 282.12854pt.
-<../results/survival_circadian_quartile.png, id=646, 1221.363pt x 733.5405pt>
+<../results/survival_circadian_quartile.png, id=652, 1221.363pt x 733.5405pt>
 File: ../results/survival_circadian_quartile.png Graphic file (type png)
 <use ../results/survival_circadian_quartile.png>
 Package pdftex.def Info: ../results/survival_circadian_quartile.png  used on in
-put line 713.
+put line 731.
 (pdftex.def)             Requested size: 469.75502pt x 282.12854pt.
  [33
 pdfTeX warning (ext4): destination with the same identifier (name{figure.12}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.717 
+l.735 
        <../results/survival_boundary_failure.png>] [34
 pdfTeX warning (ext4): destination with the same identifier (name{figure.13}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.726     \item \textbf
+l.744     \item \textbf
                        {PD-L1 $\times$ clock interaction:} The continuous in...
  <../results/survival_circadian_quartile.png>]
-<../results/robustness_primary_hr_forest.png, id=660, 932.0421pt x 443.7378pt>
+<../results/robustness_primary_hr_forest.png, id=666, 841.7046pt x 466.8642pt>
 File: ../results/robustness_primary_hr_forest.png Graphic file (type png)
 <use ../results/robustness_primary_hr_forest.png>
 Package pdftex.def Info: ../results/robustness_primary_hr_forest.png  used on i
-nput line 735.
-(pdftex.def)             Requested size: 469.75502pt x 223.64232pt.
+nput line 753.
+(pdftex.def)             Requested size: 469.75502pt x 260.55882pt.
  [35]
-<../results/stage_circadian_cv_boxplot.png, id=667, 1221.363pt x 733.5405pt>
+<../results/stage_circadian_cv_boxplot.png, id=673, 1221.363pt x 733.5405pt>
 File: ../results/stage_circadian_cv_boxplot.png Graphic file (type png)
 <use ../results/stage_circadian_cv_boxplot.png>
 Package pdftex.def Info: ../results/stage_circadian_cv_boxplot.png  used on inp
-ut line 751.
+ut line 769.
 (pdftex.def)             Requested size: 469.75502pt x 282.12854pt.
  [36
 pdfTeX warning (ext4): destination with the same identifier (name{figure.14}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.755 
+l.773 
        <../results/robustness_primary_hr_forest.png>]
-<../results/stage_circadian_spearman_summary.png, id=674, 773.289pt x 338.7054p
+<../results/stage_circadian_spearman_summary.png, id=680, 773.289pt x 338.7054p
 t>
 File: ../results/stage_circadian_spearman_summary.png Graphic file (type png)
 <use ../results/stage_circadian_spearman_summary.png>
 Package pdftex.def Info: ../results/stage_circadian_spearman_summary.png  used 
-on input line 758.
+on input line 776.
 (pdftex.def)             Requested size: 422.77664pt x 185.17737pt.
  [37
 pdfTeX warning (ext4): destination with the same identifier (name{figure.15}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.767     \item \textbf
+l.785     \item \textbf
                        {Boundary failure is not monolithic.} The data confir...
 
 pdfTeX warning (ext4): destination with the same identifier (name{figure.16}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.767     \item \textbf
+l.785     \item \textbf
                        {Boundary failure is not monolithic.} The data confir...
  <../results/stage_circadian_cv_boxplot.png> <../results/stage_circadian_spearm
 an_summary.png>]
-Overfull \hbox (4.75975pt too wide) in paragraph at lines 772--773
+Overfull \hbox (4.75975pt too wide) in paragraph at lines 790--791
 \T1/cmr/m/n/12 ence dis-tinc-tion mo-ti-vates dif-fer-ent ther-a-peu-tic strate
 -gies to test prospec-tively: checkpoint-
  []
 
 [38] [39]
-Overfull \hbox (2.61006pt too wide) in paragraph at lines 824--825
+Overfull \hbox (2.61006pt too wide) in paragraph at lines 842--843
 \T1/cmr/m/n/12 ra-tion, differentiation-like restora-tion reaches a halt state,
  while par-tial distinction-restoration
  []
 
-<../results/therapy_comparison.png, id=717, 859.5312pt x 713.064pt>
+<../results/therapy_comparison.png, id=723, 859.5312pt x 713.064pt>
 File: ../results/therapy_comparison.png Graphic file (type png)
 <use ../results/therapy_comparison.png>
 Package pdftex.def Info: ../results/therapy_comparison.png  used on input line 
-830.
+848.
 (pdftex.def)             Requested size: 469.75502pt x 389.71654pt.
 [40]
-<../results/kappa_trajectory.png, id=733, 714.9912pt x 352.1958pt>
+<../results/kappa_trajectory.png, id=739, 714.9912pt x 352.1958pt>
 File: ../results/kappa_trajectory.png Graphic file (type png)
 <use ../results/kappa_trajectory.png>
-Package pdftex.def Info: ../results/kappa_trajectory.png  used on input line 83
-7.
+Package pdftex.def Info: ../results/kappa_trajectory.png  used on input line 85
+5.
 (pdftex.def)             Requested size: 413.3867pt x 203.63419pt.
  [41
 pdfTeX warning (ext4): destination with the same identifier (name{figure.17}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.841 
+l.859 
        <../results/therapy_comparison.png>]
-<../results/coherence_vs_cancer.png, id=739, 859.5312pt x 713.064pt>
+<../results/coherence_vs_cancer.png, id=745, 859.5312pt x 713.064pt>
 File: ../results/coherence_vs_cancer.png Graphic file (type png)
 <use ../results/coherence_vs_cancer.png>
 Package pdftex.def Info: ../results/coherence_vs_cancer.png  used on input line
- 844.
+ 862.
 (pdftex.def)             Requested size: 469.75502pt x 389.71654pt.
  [42
 pdfTeX warning (ext4): destination with the same identifier (name{figure.18}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.848 
+l.866 
        <../results/kappa_trajectory.png>]
-<../results/state_distribution.png, id=745, 614.295pt x 393.6306pt>
+<../results/state_distribution.png, id=751, 614.295pt x 393.6306pt>
 File: ../results/state_distribution.png Graphic file (type png)
 <use ../results/state_distribution.png>
 Package pdftex.def Info: ../results/state_distribution.png  used on input line 
-851.
+869.
 (pdftex.def)             Requested size: 413.3867pt x 264.89635pt.
  [43
 pdfTeX warning (ext4): destination with the same identifier (name{figure.19}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.855 
+l.873 
        <../results/coherence_vs_cancer.png>]
-<../results/tissue_network.png, id=752, 881.694pt x 621.0402pt>
+<../results/tissue_network.png, id=758, 881.694pt x 621.0402pt>
 File: ../results/tissue_network.png Graphic file (type png)
 <use ../results/tissue_network.png>
-Package pdftex.def Info: ../results/tissue_network.png  used on input line 858.
+Package pdftex.def Info: ../results/tissue_network.png  used on input line 876.
 
 (pdftex.def)             Requested size: 469.75502pt x 330.87444pt.
  [44
@@ -1358,42 +1355,42 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.20}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.862 
+l.880 
        <../results/state_distribution.png>]
-<../results/phase2_baseline_kappa_summary.png, id=758, 931.8012pt x 424.9476pt>
+<../results/phase2_baseline_kappa_summary.png, id=764, 931.8012pt x 424.9476pt>
 
 File: ../results/phase2_baseline_kappa_summary.png Graphic file (type png)
 <use ../results/phase2_baseline_kappa_summary.png>
 Package pdftex.def Info: ../results/phase2_baseline_kappa_summary.png  used on 
-input line 865.
+input line 883.
 (pdftex.def)             Requested size: 469.75502pt x 214.23048pt.
  [45
 pdfTeX warning (ext4): destination with the same identifier (name{figure.21}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.869 
+l.887 
        <../results/tissue_network.png>]
-<../results/phase2_unmasking_cancer_summary.png, id=764, 931.8012pt x 352.6776p
+<../results/phase2_unmasking_cancer_summary.png, id=770, 931.8012pt x 352.6776p
 t>
 File: ../results/phase2_unmasking_cancer_summary.png Graphic file (type png)
 <use ../results/phase2_unmasking_cancer_summary.png>
 Package pdftex.def Info: ../results/phase2_unmasking_cancer_summary.png  used o
-n input line 872.
+n input line 890.
 (pdftex.def)             Requested size: 469.75502pt x 177.79672pt.
  [46
 pdfTeX warning (ext4): destination with the same identifier (name{figure.22}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.884     \item \textbf
+l.902     \item \textbf
                        {Parameter and seed dependence:} The current simulati...
 
 pdfTeX warning (ext4): destination with the same identifier (name{figure.23}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.884     \item \textbf
+l.902     \item \textbf
                        {Parameter and seed dependence:} The current simulati...
  <../results/phase2_baseline_kappa_summary.png> <../results/phase2_unmasking_ca
 ncer_summary.png>] [47] [48] [49] [50] [51] [52] [53]
@@ -1407,41 +1404,45 @@ t changed.
 (rerunfilecheck)             Checksum: 0FF9CE00E5C4179540A8C161A0D7EB93;12268.
  ) 
 Here is how much of TeX's memory you used:
- 27238 strings out of 469010
- 527044 string characters out of 5457595
- 979802 words of memory out of 5000000
- 55253 multiletter control sequences out of 15000+600000
- 648110 words of font info for 92 fonts, out of 8000000 for 9000
+ 27256 strings out of 469010
+ 527305 string characters out of 5457595
+ 987621 words of memory out of 5000000
+ 55265 multiletter control sequences out of 15000+600000
+ 648755 words of font info for 95 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 84i,15n,94p,1888b,660s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.
-600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0
-800.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/ec/e
-cti1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/
-ec/ecbx1440.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknap
-pen/ec/ectt1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/j
-knappen/ec/ecbx1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfo
-ur/jknappen/ec/ecbx1728.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/
-ljfour/jknappen/ec/ecrm1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts
-/pk/ljfour/jknappen/ec/ecti1095.600pk> <c:/Users/Moses/.texlive2024/texmf-var/f
-onts/pk/ljfour/jknappen/ec/ecbx1095.600pk> <c:/Users/Moses/.texlive2024/texmf-v
-ar/fonts/pk/ljfour/jknappen/ec/ectt1095.600pk> <c:/Users/Moses/.texlive2024/tex
-mf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> <c:/Users/Moses/.texlive2024
-/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> <c:/Users/Moses/.texlive
-2024/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk><c:/texlive/2024/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2024/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2024/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmmi8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr10.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
-><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texliv
-e/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2024/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on Cancer_As_Boundary_Logic_Failure.pdf (53 pages, 9276810 bytes
+ 84i,15n,94p,1997b,641s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0600.
+600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1
+200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/ec/e
+crm0800.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknappen/
+ec/ecti1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/jknap
+pen/ec/ecbx1440.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfour/j
+knappen/ec/ectt1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/ljfo
+ur/jknappen/ec/ecbx1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts/pk/
+ljfour/jknappen/ec/ecbx1728.600pk> <c:/Users/Moses/.texlive2024/texmf-var/fonts
+/pk/ljfour/jknappen/ec/ecrm1200.600pk> <c:/Users/Moses/.texlive2024/texmf-var/f
+onts/pk/ljfour/jknappen/ec/ecti1095.600pk> <c:/Users/Moses/.texlive2024/texmf-v
+ar/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk> <c:/Users/Moses/.texlive2024/tex
+mf-var/fonts/pk/ljfour/jknappen/ec/ectt1095.600pk> <c:/Users/Moses/.texlive2024
+/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> <c:/Users/Moses/.texlive
+2024/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> <c:/Users/Moses/.tex
+live2024/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk><c:/texlive/2024/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2024/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2024/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi12.pfb><c:/texlive/2024/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmmi6.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi8.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10
+.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/t
+exlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2024
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2024/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2024/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy6.pfb><c:/texlive/2024/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmsy8.pfb>
+Output written on Cancer_As_Boundary_Logic_Failure.pdf (53 pages, 9295970 bytes
 ).
 PDF statistics:
- 1589 PDF objects out of 1728 (max. 8388607)
- 864 compressed objects within 9 object streams
+ 1660 PDF objects out of 1728 (max. 8388607)
+ 878 compressed objects within 9 object streams
  231 named destinations out of 1000 (max. 500000)
- 12840 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 13352 words of extra memory for PDF output out of 14400 (max. 10000000)
 

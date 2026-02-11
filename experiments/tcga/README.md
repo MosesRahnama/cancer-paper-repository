@@ -12,7 +12,7 @@ This analysis validates that cancer progression involves systematic failures in 
 - **Two distinct boundary-failure modes identified:**
   - **Active Masking**: High PD-L1 + locked circadian clock (high BMAL1, low PER1) → better survival
   - **Decoherence**: Low PD-L1 + low MHC-I → worse survival, genuine loss of coherence
-- **Survival association (patient-level deduplicated)**: Active Masking vs Decoherence is significant in SKCM (p=0.0011, q=0.0066) and directionally consistent but nominal in LUAD (p=0.049, q=0.147)
+- **Survival association (patient-level deduplicated; BH across all 12 survival tests)**: Active Masking vs Decoherence is significant in SKCM (p=0.0011, q=0.0132) and directionally consistent but nominal in LUAD (p=0.049, q=0.294)
 
 ## Prerequisites
 
@@ -103,6 +103,9 @@ python tcga_stage_analysis.py      # Stage-stratified analysis + FDR correction
 # 3. OPTIONAL: Run robustness checks with covariate control (for peer review)
 # Requires optional covariate file (see script #8 documentation)
 python robustness_check.py         # Multivariable Cox models with stage + microenvironment controls
+
+# 4. Sync manuscript artifacts + emit provenance manifest
+python sync_manuscript_artifacts.py --rewrite-tex
 
 # All results saved to current directory + figures/ subdirectory
 ```
@@ -245,8 +248,8 @@ GROUP BY project_short_name, case_barcode, sample_barcode, sample_type_name
 
 **Key finding**:
 - After enforcing one tumor sample per case, Active Masking vs Decoherence is:
-- SKCM: log-rank p = 0.0011, BH q = 0.0066 (significant)
-- LUAD: log-rank p = 0.049, BH q = 0.147 (nominal only)
+- SKCM: log-rank p = 0.0011, BH q = 0.0132 across all 12 survival tests (significant)
+- LUAD: log-rank p = 0.049, BH q = 0.294 across all 12 survival tests (nominal only)
 
 **Statistical note**: Uses `CensoredData.right_censored(all_times, is_censored_mask)` where `is_censored_mask[i] = True` if patient i is censored (alive or lost to follow-up).
 
