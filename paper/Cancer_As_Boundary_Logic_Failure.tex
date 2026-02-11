@@ -132,6 +132,8 @@ The framework also connects to Levin's bioelectric work~\cite{levin2021bioelectr
 
 The atavistic model explains reactivation of proliferative drives, but critics note that tumors also show neomorphic traits, including drug resistance, that ancestral unicells did not exhibit. In our framework, this follows from loss of termination predicates: once boundary control weakens, the system enters an unbounded search loop. That loop can recover ancestral solutions and also discover new resistance strategies under modern constraints. Cancer is atavistic in origin but evolutionary in progression.
 
+Cancer immunoediting~\cite{dunn2004immunoediting,schreiber2011immunoediting} provides the immune-specific counterpart. The ``Three Es'' framework (Elimination, Equilibrium, Escape) describes how tumors evolve under immune pressure. In our boundary-failure language, the Elimination phase corresponds to intact boundary enforcement; Equilibrium corresponds to a regime where boundary observability is degraded but not yet collapsed; and Escape corresponds to full boundary failure. The Active Masking subtype identified in this paper (Section~\ref{subsec:active-masking}) maps to a specific Escape mechanism: the tumor remains antigen-visible but vetoes clearance via checkpoint engagement. The Decoherence subtype represents a distinct Escape route: loss of antigen presentation and temporal coordination renders the tumor effectively invisible. The boundary framework thus refines the Escape phase into mechanistically distinguishable subtypes with different therapeutic implications.
+
 \subsection*{Preview: Empirical Validation Across Six Cancer Types}
 
 Before developing the formal framework, we preview the empirical foundation: validation across six TCGA cancer cohorts ($n=3{,}611$ tumor samples) confirms the framework's core predictions. Figure~\ref{fig:multicancer-forest-preview} shows a consistent negative circadian CV\textendash{}PD-L1 coupling in \textbf{all six cancer types} (100\% replication rate, all FDR-corrected $q < 0.05$): higher PD-L1 is associated with lower circadian CV (more locked/coherent clock-gene expression). This cross-cancer coupling between temporal boundary mechanisms (circadian program state) and immune boundary mechanisms (checkpoint engagement) supports the unifying boundary-failure interpretation. Detailed analysis, survival outcomes, and Active Masking vs.\ Decoherence stratification are presented in Section~\ref{sec:tcga}.
@@ -187,7 +189,7 @@ In this regime, organism-level signals are present but underweighted. The decisi
 
 The framework uses ``distinction'' as an organizing concept: for the organism to control a cell, the cell must be distinguishable in ways that matter for regulation (state, location, lineage, antigen presentation, and response to signals). Maintaining, transmitting, and acting on such distinctions has costs in physical systems~\cite{landauer1961irreversibility,bennett1982thermodynamics,shannon1948mathematical}.
 
-To make this thermodynamic claim explicit without overreach, we use the conditional record-formation lower bound from the boundary-measurement framework~\cite{rahnama2025thermodynamic}:
+To make this thermodynamic claim explicit without overreach, we use the conditional record-formation lower bound from the boundary-measurement framework~\cite{rahnama2025thermodynamic}. Landauer's principle has been experimentally verified at the single-bit level~\cite{berut2012landauer}; we adopt it here as an organizing principle for biological distinction costs, not as a direct metabolic predictor:
 \begin{equation}
 \langle Q_{\mathrm{rec}}\rangle \ge k_B T\ln 2 \cdot I(X;Y),
 \label{eq:record-formation-bound}
@@ -717,6 +719,15 @@ Active Masking tumors showed better overall survival than Decoherence tumors in 
 
 Across the 12 pre-specified cohort-level survival contrasts (6 AM-vs-DC and 6 circadian quartile tests), BH correction across all 12 tests yields 1 FDR-significant endpoint (SKCM AM-vs-DC), 1 nominal endpoint (LUAD AM-vs-DC), and 10 non-significant endpoints.
 
+\paragraph{Threshold sensitivity.} To test whether the melanoma survival signal depends on the specific median-split threshold, we swept the classification percentile from 25th to 75th in steps of 5 and re-ran AM-vs-DC log-rank tests at each threshold. The SKCM signal is significant ($p < 0.05$) from the 25th to the 65th percentile (9/11 thresholds), with the strongest signal at the 35th\textendash{}40th percentile ($p = 0.0005$). The median (50th percentile) is therefore a conservative choice, not a cherry-picked threshold. LUAD reaches nominal significance only at the median. Figure~\ref{fig:threshold-sweep} shows $-\log_{10}(p)$ across thresholds.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/threshold_sensitivity_sweep.png}
+\caption{Threshold sensitivity sweep: AM-vs-DC log-rank $p$ across classification percentile thresholds (25th\textendash{}75th). SKCM is significant at 9/11 thresholds (strongest at 35th\textendash{}40th percentile, $p=0.0005$). The default median split is conservative. Annotated fractions show $n_{\text{AM}}/n_{\text{DC}}$ at each threshold.}
+\label{fig:threshold-sweep}
+\end{figure}
+
 Quartile-based circadian CV alone did \emph{not} predict survival in any of the six cancer types (Figure~\ref{fig:survival-quartile}), suggesting that boundary-failure \emph{mode} may matter more than coherence level per se. A tumor with low circadian CV is not inherently better or worse; what matters is \emph{why} its clock is coherent. Active Masking tumors (coherent clock + checkpoint engagement) are plausibly more immune-visible, while Decoherence tumors (disordered clock + antigen loss) are plausibly more immune-evasive. Clinical-adjusted robustness models are reported in Section~\ref{subsec:robustness}.
 
 \begin{figure}[H]
@@ -736,7 +747,7 @@ Quartile-based circadian CV alone did \emph{not} predict survival in any of the 
 \subsection{Robustness to Clinical Covariates and Interaction Structure}
 \label{subsec:robustness}
 
-To reduce confounding risk from clinical composition, we re-estimated the survival signal in SKCM and LUAD using multivariable Cox models in the deduplicated patient-level cohort (one tumor sample per case). Covariates included boundary mode, age, sex, and stage as categorical indicators (II/III/IV plus stage-missing, with stage I as reference). When available, we added microenvironment covariates from Thorsson et~al.\ data (purity, lymphoid/myeloid/leukocyte infiltration proxies, stromal fraction, IFN-$\gamma$ response, and TGF-$\beta$ response). We tested a continuous interaction term between PD-L1 and an orthogonal clock metric (circadian CV computed from CLOCK, PER2, CRY1, and CRY2, excluding ARNTL/PER1 to reduce definitional coupling). We also ran a sensitivity model that adds continuous PD-L1 and B2M terms to test whether boundary mode adds signal beyond these components. Primary robustness tests were BH-corrected across cohorts and tests.
+To reduce confounding risk from clinical composition, we re-estimated the survival signal in SKCM and LUAD using multivariable Cox models in the deduplicated patient-level cohort (one tumor sample per case). Covariates included boundary mode, age, sex, and stage as categorical indicators (II/III/IV plus stage-missing, with stage I as reference). When available, we added microenvironment covariates from the TCGA immune landscape characterization~\cite{thorsson2018immune} (purity, lymphoid/myeloid/leukocyte infiltration proxies, stromal fraction, IFN-$\gamma$ response, and TGF-$\beta$ response). We tested a continuous interaction term between PD-L1 and an orthogonal clock metric (circadian CV computed from CLOCK, PER2, CRY1, and CRY2, excluding ARNTL/PER1 to reduce definitional coupling). We also ran a sensitivity model that adds continuous PD-L1 and B2M terms to test whether boundary mode adds signal beyond these components. Primary robustness tests were BH-corrected across cohorts and tests.
 
 \begin{itemize}[leftmargin=1.5em]
     \item \textbf{Adjusted boundary-mode effect:} In the microenvironment-adjusted Cox model, Active Masking remained associated with lower hazard in both cohorts, but FDR support differed: SKCM HR $=0.507$, $p=0.0286$, BH $q=0.0686$ (nominal), LUAD HR $=0.288$, $p=0.0114$, BH $q=0.0454$ (FDR-significant).
@@ -747,6 +758,21 @@ To reduce confounding risk from clinical composition, we re-estimated the surviv
 \end{itemize}
 
 These robustness analyses remain observational and complete-case. Covariate availability reduced model sample sizes (for example, AM-vs-DC models used $n=175$ in SKCM and $n=183$ in LUAD). Figure~\ref{fig:robustness-forest} summarizes hazard-ratio estimates and confidence intervals across pre-specified robustness models. Time-interaction proportional-hazards screens indicated broad potential non-proportionality across covariates. Cox coefficients should therefore be interpreted as time-averaged associations pending stratified or explicitly time-varying follow-up models.
+
+\paragraph{Restricted Mean Survival Time (RMST).}
+Because PH violations are prevalent in the Cox models, we computed RMST (area under the KM curve up to a time horizon $\tau$) as a PH-assumption-free alternative. RMST difference (AM minus DC) with bootstrap 95\% CIs ($n=1{,}000$ resamples):
+\begin{itemize}[leftmargin=1.5em]
+    \item SKCM ($\tau = 60$ months): $+11.3$ months (95\% CI: $5.3$\textendash{}$16.8$); ($\tau = 120$ months): $+24.2$ months (95\% CI: $10.8$\textendash{}$36.8$). Significant at all four time horizons tested.
+    \item LUAD ($\tau = 60$ months): $+7.8$ months (95\% CI: $1.3$\textendash{}$14.2$). Significant up to $\tau = 84$ months; 120-month CI crosses zero due to sparse late follow-up.
+\end{itemize}
+The AM survival advantage in melanoma is confirmed without any proportional hazards assumption. Figure~\ref{fig:rmst} shows RMST differences with bootstrap CIs.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/rmst_am_vs_dc.png}
+\caption{RMST difference (Active Masking minus Decoherence, in months) at four time horizons for SKCM and LUAD. Bootstrap 95\% CIs ($n=1{,}000$, seed=42). Green bars: CI excludes zero (significant). The PH-free RMST confirms the AM survival advantage at every horizon in melanoma.}
+\label{fig:rmst}
+\end{figure}
 
 \begin{figure}[H]
 \centering
@@ -778,15 +804,79 @@ This pattern is compatible with the framework's prediction that boundary failure
 \label{fig:stage-spearman-summary}
 \end{figure}
 
+\subsection{Stromal Confound Sensitivity}
+\label{subsec:stromal}
+
+A key alternative explanation for the circadian CV\textendash{}PD-L1 coupling is that immune cell infiltration drives both signals: interferon-$\gamma$ from T cells co-activates PD-L1 and BMAL1-responsive programs~\cite{thorsson2018immune}, so the ``locked clock'' could reflect immune cell admixture rather than tumor-intrinsic restructuring. We addressed this with two complementary analyses.
+
+\paragraph{Immune-fraction residualization.} We regressed circadian CV on five immune covariates (leukocyte fraction, lymphocyte infiltration, IFN-$\gamma$ response, tumor purity, stromal fraction) from the Thorsson et~al.\ immune landscape data~\cite{thorsson2018immune} and correlated the residual CV with PD-L1. Immune covariates explained only 0.7\textendash{}13.8\% of circadian CV variance ($R^2$). After removing these effects, the residual CV\textendash{}PD-L1 correlation remained significant in all four cohorts tested: SKCM (residual $\rho = -0.141$, $p < 0.01$), LUAD ($\rho = -0.159$, $p < 0.001$), BRCA ($\rho = -0.173$, $p < 0.001$), and HNSC ($\rho = -0.126$, $p < 0.01$). Figure~\ref{fig:immune-resid} shows the residualized scatter.
+
+\paragraph{Purity-stratified replication.} We split tumors into purity tertiles and re-computed the CV\textendash{}PD-L1 correlation within each stratum. The negative correlation persisted within all three tertiles for SKCM (strongest in Low purity: $\rho = -0.480$), LUAD, and BRCA (9/9 tertile-level tests significant in these cohorts). HNSC tertiles were individually non-significant, consistent with its smallest raw effect size ($\rho = -0.125$ overall). Figure~\ref{fig:purity-strat} shows the stratified correlations.
+
+These analyses do not rule out all immune confounding (single-cell resolution is required for that), but they demonstrate that the circadian\textendash{}checkpoint coupling has a component beyond bulk immune-fraction mixing.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/immune_residualization_scatter.png}
+\caption{Circadian CV vs.\ PD-L1 after immune-fraction residualization in four TCGA cohorts. Immune covariates explain $R^2 = 0.007$\textendash{}$0.138$ of CV variance; the residual CV\textendash{}PD-L1 correlation remains significant in all four cohorts.}
+\label{fig:immune-resid}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/purity_stratified_correlations.png}
+\caption{Circadian CV vs.\ PD-L1 within tumor-purity tertiles. The negative correlation persists in all three strata for SKCM, LUAD, and BRCA, arguing against a pure stromal-mixing explanation.}
+\label{fig:purity-strat}
+\end{figure}
+
+\subsection{Composite Observability Index}
+\label{subsec:obs-index}
+
+To address the concern that ``forced distinction'' risks tautology (cancer = loss of distinction, therapy = restoration of distinction), we constructed an independent composite observability index from features \emph{not} used in the AM/DC classification rule:
+\begin{itemize}[leftmargin=1.5em]
+    \item MHC-I composite: mean log$_2$(HLA-A, HLA-B, HLA-C)\textemdash{}not B2M (used in DC definition)
+    \item Gap junction composite: mean log$_2$(GJA1, GJB2, GJA5, GJB6)\textemdash{}not used in AM/DC at all
+    \item Orthogonal circadian CV: CV of CLOCK, PER2, CRY1, CRY2\textemdash{}excluding ARNTL and PER1 (used in AM definition)
+\end{itemize}
+Each component was $z$-scored within cohort and averaged with equal weights (higher index = more observable).
+
+The index separates AM from DC with $p = 1.7 \times 10^{-10}$ (SKCM) and $p = 1.5 \times 10^{-20}$ (LUAD), confirming that boundary-failure subtypes differ on features independent of their definition. It correlates with PD-L1 at $\rho = +0.482$ (SKCM) and $+0.539$ (LUAD). Median-split survival shows a directional advantage for high-observability tumors ($p = 0.063$ SKCM, $p = 0.083$ LUAD)\textemdash{}not FDR-significant, but consistent with the framework using deliberately weaker/orthogonal features. Figure~\ref{fig:obs-index} shows the survival comparison.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/observability_index_survival.png}
+\caption{Kaplan-Meier survival by composite observability index (median split) in SKCM and LUAD. The index uses features independent of the AM/DC classification rule (HLA-A/B/C, gap junctions, orthogonal clock genes). Directional survival advantage for high-observability tumors is consistent with the framework.}
+\label{fig:obs-index}
+\end{figure}
+
+\subsection{External Validation: GSE91061 (Nivolumab Melanoma)}
+\label{subsec:external}
+
+To test generalizability beyond TCGA, we analyzed pre-treatment melanoma RNA-seq data from an independent nivolumab immunotherapy cohort (GSE91061; Riaz et~al., 2017~\cite{riaz2017nivolumab}; $n=49$ pre-treatment samples with known response: 10 PR/CR, 16 SD, 23 PD). Gene expression (FPKM) was available for all 15 target genes via Entrez ID mapping.
+
+The circadian CV\textendash{}PD-L1 negative correlation \textbf{replicates} in this independent cohort: Spearman $\rho = -0.283$, $p = 0.049$. This is the seventh cohort showing the same direction (7/7 negative across 6 TCGA + 1 external). Among responders (PR/CR), mean circadian CV was 0.300 vs.\ 0.350 for progressors (PD), consistent with the framework's prediction that lower CV tracks immune-engaged boundary states.
+
+AM-vs-DC response rate comparison (Fisher exact $p = 1.0$; $n_{\text{AM}} = 10$) is underpowered for a subtype-level response-rate test and is reported as descriptive. Adequate power for the prospective prediction (AM responds better to checkpoint blockade) requires larger immunotherapy cohorts. Figure~\ref{fig:external} shows the three-panel external validation summary.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{results/external_validation_geo.png}
+\caption{External validation in GSE91061 (Riaz et~al., nivolumab melanoma, $n=49$ pre-treatment). Left: circadian CV vs.\ PD-L1 replicates the TCGA negative correlation ($\rho = -0.283$, $p = 0.049$). Center: immunotherapy response rate by boundary-failure subtype (underpowered, descriptive). Right: circadian CV by RECIST response category (responders show lower CV).}
+\label{fig:external}
+\end{figure}
+
 \subsection{Implications for the Framework}
 
-The expanded TCGA analysis across six cancer types and $n=3{,}611$ tumors refines the boundary-failure framework in five ways:
+The expanded TCGA analysis across six cancer types and $n=3{,}611$ tumors, supplemented by sensitivity analyses and one external cohort, refines the boundary-failure framework in the following ways:
 \begin{enumerate}[leftmargin=1.5em]
     \item \textbf{Boundary failure is not monolithic.} The data confirm at least two distinct failure modes across all six cancer types: (a) \emph{Active Masking}, where the tumor retains a low-CV (transcriptionally ``locked'') clock-gene signature and deploys checkpoint molecules to veto organism-level clearance (visible but vetoed), and (b) \emph{Temporal Decoherence}, where clock-gene structure is more variable and immune visibility is low (invisible). Both are boundary failures, but through different mechanisms with different clinical implications.
     \item \textbf{The clock is transcriptionally locked, not uniformly disordered.} Tumors show lower circadian CV than matched normals in 4/5 cancer types (with one non-significant cohort, COAD), and Active Masking tumors show the lowest CV of all. This is inconsistent with a simple ``broken clock'' expectation for bulk clock-gene expression and supports clock co-option in this proxy.
     \item \textbf{Budget Escape, not Trade-off.} Contrary to a simple resource trade-off hypothesis, proliferation and coherence markers show positive correlation in 5/6 cancer types. This contradicts a fixed-budget constraint within the tumor ($C_G + C_S \le B$) and supports a ``budget escape'' model where malignant cells expand metabolic capacity (Warburg effect) to sustain both high proliferation and high internal order, externalizing the cost to the host (cachexia).
     \item \textbf{Boundary-failure mode is associated with survival heterogeneity.} Active Masking tumors show better overall survival than Decoherence tumors in melanoma (significant after BH correction across all 12 survival tests: $p = 0.0011$, $q = 0.0132$), with a directionally similar but nominal result in lung adenocarcinoma ($p = 0.049$, $q = 0.294$). In multivariable, microenvironment-adjusted Cox robustness models (SKCM/LUAD), boundary-mode effects remained protective in both cohorts, FDR-significant in LUAD (HR $=0.288$, $q = 0.0454$) and nominal in SKCM (HR $=0.507$, $q = 0.0686$); PD-L1$\times$orthogonal-clock interaction was significant in SKCM (HR $=0.217$, $q = 0.0454$).
     \item \textbf{Circadian restructuring is largely stage-stable in this dataset.} Most circadian-stage tests were non-significant after global FDR correction, with one borderline HNSC trend ($q \approx 0.050$), which is still compatible with early establishment and persistence but does not alone establish temporal causality.
+    \item \textbf{The circadian\textendash{}checkpoint coupling survives stromal confound tests.} After regressing out immune-infiltration covariates, the residual CV\textendash{}PD-L1 correlation remains significant in 4/4 cohorts tested ($R^2$ of immune effects on CV: 0.7\textendash{}13.8\%). Within-purity-tertile replication further argues against a pure stromal-mixing artifact (Section~\ref{subsec:stromal}).
+    \item \textbf{Independent operationalization of ``observability.''} A composite index constructed from features orthogonal to the AM/DC classification rule separates the subtypes with $p < 10^{-10}$ and correlates with PD-L1 at $\rho > 0.48$, demonstrating that boundary-failure mode captures real biology beyond definitional artifacts (Section~\ref{subsec:obs-index}).
+    \item \textbf{External replication.} The circadian CV\textendash{}PD-L1 negative correlation replicates in an independent nivolumab melanoma cohort (GSE91061; $\rho = -0.283$, $p = 0.049$), extending the finding to 7/7 cohorts tested (Section~\ref{subsec:external}).
     \item \textbf{Hypothesis-generating therapeutic implications.} The Active Masking / Decoherence distinction motivates different therapeutic strategies to test prospectively: checkpoint-based approaches may preferentially benefit Active Masking-like states (restore a vetoed immune response), while Decoherence-like states may require differentiation or antigen-restoration strategies before checkpoint blockade. Gap junction expression remains an unreliable RNA-level proxy for functional GJIC; functional assays are required.
 \end{enumerate}
 
@@ -902,6 +992,8 @@ Figures~\ref{fig:therapy-comparison}, \ref{fig:kappa-trajectory}, \ref{fig:coher
     \item \textbf{Parameter and seed dependence:} The current simulation outputs are from illustrative parameter settings and a representative random seed. Multi-seed sweeps and sensitivity analyses are required before drawing comparative conclusions across operators.
     \item \textbf{No explicit immune-kill dynamics:} Immune recognition, clearance kinetics, and adaptive escape are not explicitly modeled. Some operators therefore change observability without automatically enforcing elimination.
     \item \textbf{Many endpoints are null or nominal:} Across pre-specified TCGA endpoint families, several contrasts are non-significant after correction (for example, most survival and stage-stratified tests). We report these explicitly and avoid treating nominal trends as confirmatory evidence.
+    \item \textbf{External validation is preliminary:} The GSE91061 cohort ($n=49$ pre-treatment) replicates the correlation-level finding but is underpowered for subtype-level response-rate comparisons. Larger immunotherapy cohorts with response endpoints are needed to test the prospective prediction that Active Masking tumors respond better to checkpoint blockade.
+    \item \textbf{Bulk RNA-seq does not resolve tumor-intrinsic vs.\ stromal signals:} Immune residualization and purity stratification mitigate but do not eliminate stromal confounding. Single-cell RNA-seq validation (particularly for clock-gene expression at cellular resolution) remains a critical next step.
     \item \textbf{Thermodynamics is interpretive:} While energy and information constraints motivate the narrative, we do not derive quantitative metabolic bounds from first principles. The Landauer framing is used as an organizing guide for distinguishing energetic replication cost from decoupled identity-forming processes; host metabolic burden and cachexia remain explicitly multi-mechanism processes.
     \item \textbf{Analogy boundaries:} \texttt{rec\_succ} is used to clarify a structural failure mode (duplication without a termination predicate). It is not a claim of literal undecidability in biology.
     \item \textbf{Identity-weight abstraction:} The variables $w_{\text{self}}$, $w_{\text{org}}$, and $A(t)$ are coarse control proxies. Operational mappings to specific molecular observables require dedicated calibration.
@@ -918,14 +1010,14 @@ The practical value of the framework is threefold:
 \begin{enumerate}[leftmargin=1.5em]
     \item \textbf{As an organizing language:} It highlights the shared structure across seemingly different cancer mechanisms; all involve loss of cross-scale coupling and collapse into local self-reference.
     \item \textbf{As a therapeutic design principle:} ``Forced distinction'' unifies the logic behind immunotherapy, differentiation therapy, bioelectric reprogramming, and chronotherapy. In this framing, interventions lie on a distinction-restoration continuum: some improve observability, while stronger restoration can push cells toward explicit halt states.
-    \item \textbf{As a source of testable hypotheses:} The framework generates predictions about circadian disruption, bioelectric markers, coherence metrics, and growth-stability dynamics that can be tested against existing and prospective data. TCGA validation across six cancer types ($n=3{,}611$ tumor samples; Section~\ref{sec:tcga}) supports this direction: the circadian\textendash{}checkpoint coupling replicates in 100\% of cohorts tested, tumors show a transcript-level ``locked'' (lower-CV) clock-gene signature relative to matched normals, and patient-level survival analysis shows a significant Active Masking vs.\ Decoherence difference in melanoma with a directionally similar nominal signal in lung adenocarcinoma. Most other survival and stage endpoints remain non-significant after correction and are treated as bounds on the model rather than proof against all effects.
+    \item \textbf{As a source of testable hypotheses:} The framework generates predictions about circadian disruption, bioelectric markers, coherence metrics, and growth-stability dynamics that can be tested against existing and prospective data. TCGA validation across six cancer types ($n=3{,}611$ tumor samples; Section~\ref{sec:tcga}) supports this direction: the circadian\textendash{}checkpoint coupling replicates in 100\% of cohorts tested (and in one external immunotherapy cohort), tumors show a transcript-level ``locked'' (lower-CV) clock-gene signature relative to matched normals, and patient-level survival analysis shows a significant Active Masking vs.\ Decoherence difference in melanoma (confirmed by PH-free RMST: $+24$ months at 10 years) with a directionally similar signal in lung adenocarcinoma. The survival signal is robust to threshold choice (significant at 9/11 percentile thresholds), survives immune-fraction residualization, and is captured by an independently operationalized observability index. Most other survival and stage endpoints remain non-significant after correction and are treated as bounds on the model rather than proof against all effects.
 \end{enumerate}
 
 For interpretive clarity, we separate three layers: [M] metaphor (conceptual analogies such as \texttt{rec\_succ}), [C] claim (structural assertions about boundary failure and observability), and [P] prediction (falsifiable hypotheses in Section~\ref{sec:hypotheses}, with multi-cancer validation in Section~\ref{sec:tcga}).
 
 The Active Masking / Decoherence distinction yields hypothesis-generating therapeutic implications: checkpoint inhibitors could preferentially benefit Active Masking tumors (where the immune response is visible but vetoed), while Decoherence tumors may require differentiation therapy or antigen-restoration strategies to restore immune visibility before checkpoint blockade can be effective. This is a prospective prediction: TCGA survival analysis does not measure checkpoint-blockade response. Boundary-failure subtyping could be evaluated prospectively as a complement to existing biomarkers (PD-L1 IHC, tumor mutational burden) for immunotherapy patient selection.
 
-Next steps are to (i) validate the Active Masking / Decoherence classification in independent cohorts and in clinical trial datasets with immunotherapy response outcomes, (ii) operationalize gap-junction and bioelectric proxies using functional assays rather than transcript-level data, and (iii) test the circadian-restructuring finding in single-cell RNA-seq datasets where clock-gene heterogeneity can be resolved at cellular resolution. A companion repository (\href{https://github.com/MosesRahnama/cancer-paper-repository}{github.com/MosesRahnama/cancer-paper-repository}) implements the tissue graph model, four therapeutic operators, TCGA extraction and analysis pipelines (six cancer types), survival analysis, immune-subtype classification, and visualization tools for reproducibility and community testing.
+Preliminary external validation in one nivolumab melanoma cohort (GSE91061, $n=49$) replicates the circadian\textendash{}checkpoint correlation but is underpowered for subtype-level response testing. Next steps are to (i) validate the Active Masking / Decoherence classification in larger independent immunotherapy cohorts with treatment-response endpoints, (ii) operationalize gap-junction and bioelectric proxies using functional assays rather than transcript-level data, (iii) test the circadian-restructuring finding in single-cell RNA-seq datasets where clock-gene heterogeneity can be resolved at cellular resolution, and (iv) pursue tumor-purity-stratified and single-cell deconvolution analyses to further resolve tumor-intrinsic from stromal contributions to the circadian\textendash{}checkpoint signal. A companion repository (\href{https://github.com/MosesRahnama/cancer-paper-repository}{github.com/MosesRahnama/cancer-paper-repository}) implements the tissue graph model, four therapeutic operators, TCGA extraction and analysis pipelines (six cancer types), survival analysis, immune-subtype classification, and visualization tools for reproducibility and community testing.
 
 %==============================================================================
 \section{Future Research Directions}
@@ -1216,6 +1308,40 @@ The ISB Cancer Genomics Cloud: A Flexible Cloud-Based Platform for Cancer Genomi
 \textit{Cancer Research}, 77(21), e7\textendash{}e10.
 \url{https://doi.org/10.1158/0008-5472.CAN-17-0617}
 
+% === Cancer Immunoediting ===
+\bibitem{dunn2004immunoediting}
+Dunn, G.\,P., Old, L.\,J., \& Schreiber, R.\,D. (2004).
+The Three Es of Cancer Immunoediting.
+\textit{Annual Review of Immunology}, 22, 329\textendash{}360.
+\url{https://doi.org/10.1146/annurev.immunol.22.012703.104803}
+
+\bibitem{schreiber2011immunoediting}
+Schreiber, R.\,D., Old, L.\,J., \& Smyth, M.\,J. (2011).
+Cancer Immunoediting: Integrating Immunity's Roles in Cancer Suppression and Promotion.
+\textit{Science}, 331(6024), 1565\textendash{}1570.
+\url{https://doi.org/10.1126/science.1203486}
+
+% === Immune Landscape ===
+\bibitem{thorsson2018immune}
+Thorsson, V., et al. (2018).
+The Immune Landscape of Human Tumors.
+\textit{Immunity}, 48(4), 812\textendash{}830.e14.
+\url{https://doi.org/10.1016/j.immuni.2018.03.023}
+
+% === Experimental Landauer ===
+\bibitem{berut2012landauer}
+B\'{e}rut, A., et al. (2012).
+Experimental verification of Landauer's principle linking information and thermodynamics.
+\textit{Nature}, 483, 187\textendash{}189.
+\url{https://doi.org/10.1038/nature10872}
+
+% === External Validation ===
+\bibitem{riaz2017nivolumab}
+Riaz, N., et al. (2017).
+Tumor and Microenvironment Evolution during Immunotherapy with Nivolumab.
+\textit{Cell}, 171(4), 934\textendash{}949.e16.
+\url{https://doi.org/10.1016/j.cell.2017.09.028}
+
 \end{thebibliography}
 
 \newpage
@@ -1243,6 +1369,11 @@ The manuscript intentionally omits embedded Python listings to keep the paper fo
     \item \textbf{Immune subtype classification:} \path{experiments/tcga/tcga_immune_subtype.py}
     \item \textbf{Survival analysis:} \path{experiments/tcga/tcga_survival.py}
     \item \textbf{Stage-stratified analysis:} \path{experiments/tcga/tcga_stage_analysis.py}
+    \item \textbf{Threshold sensitivity sweep:} \path{experiments/tcga/sensitivity_threshold_sweep.py}
+    \item \textbf{RMST survival analysis:} \path{experiments/tcga/sensitivity_rmst.py}
+    \item \textbf{Immune residualization:} \path{experiments/tcga/sensitivity_immune_residualization.py}
+    \item \textbf{Composite observability index:} \path{experiments/tcga/composite_observability_index.py}
+    \item \textbf{External validation (GSE91061):} \path{experiments/tcga/run_external_validation.py}
     \item \textbf{Generated outputs:} \path{results/} (JSON + figures used in this manuscript)
 \end{itemize}
 

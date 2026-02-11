@@ -345,6 +345,120 @@ This script can optionally incorporate tumor purity and microenvironment estimat
 
 ---
 
+---
+
+#### 9. **sensitivity_threshold_sweep.py**
+**Type**: Subtype classification robustness analysis
+**Runtime**: ~30 seconds
+**Inputs**: `tcga_expanded_tpm.csv`, `tcga_clinical.csv`
+**Outputs**:
+- `threshold_sensitivity_results.csv` (log-rank p-values across 11 percentile thresholds)
+- `results/threshold_sensitivity_sweep.png` (bar chart: -log10(p) vs threshold percentile)
+
+**What it does:**
+1. Varies the percentile cutoff used for AM/DC classification from 25th to 75th in steps of 5
+2. Re-classifies all tumors at each threshold
+3. Re-runs log-rank survival test (AM vs DC) for SKCM and LUAD at each threshold
+4. Reports whether the melanoma survival signal is robust to threshold choice
+
+**Key finding**: SKCM survival signal is significant from the 25th to 65th percentile (9/11 thresholds, p < 0.05). The median (50th) is actually conservative — the strongest signal occurs at the 35th-40th percentile (p = 0.0005). This demonstrates that the survival finding is not an artifact of the specific threshold chosen.
+
+---
+
+#### 10. **sensitivity_rmst.py**
+**Type**: PH-assumption-free survival analysis
+**Runtime**: ~2 minutes (includes 1,000 bootstrap iterations)
+**Inputs**: `tcga_expanded_tpm.csv`, `tcga_clinical.csv`
+**Outputs**:
+- `rmst_results.csv` (RMST estimates and bootstrap 95% CIs at 4 time horizons)
+- `results/rmst_am_vs_dc.png` (bar chart: RMST difference with CI per cohort)
+
+**What it does:**
+1. Computes Restricted Mean Survival Time (RMST) — area under the KM curve up to a time horizon tau — for AM and DC groups separately
+2. Tests RMST difference (AM minus DC) at tau = 36, 60, 84, 120 months
+3. Constructs bootstrap 95% confidence intervals (n=1,000 resamples, seed=42)
+4. Reports results for SKCM and LUAD
+
+**Why it matters**: Cox models in the robustness analysis show PH violation fractions of 0.64-1.0. RMST requires NO proportional hazards assumption. It answers: "On average, how many more months do AM patients survive than DC patients over this time window?"
+
+**Key finding**: Melanoma AM patients survive 24.2 months longer than DC patients at the 10-year horizon (bootstrap 95% CI: 10.8-36.8 months). Significant at every time horizon tested (36, 60, 84, 120 months). LUAD shows a 7.8-month advantage at 5 years (CI: 1.3-14.2).
+
+---
+
+#### 11. **sensitivity_immune_residualization.py**
+**Type**: Stromal contamination sensitivity analysis
+**Runtime**: ~30 seconds
+**Inputs**: `tcga_expanded_tpm.csv`, `tcga_purity_immune_covariates.csv`
+**Outputs**:
+- `immune_residualization_results.csv` (R2 of immune effects on CV, residual correlations, purity-tertile results)
+- `results/immune_residualization_scatter.png` (residual CV vs PD-L1 scatter after immune removal)
+- `results/purity_stratified_correlations.png` (CV vs PD-L1 within purity tertiles)
+
+**What it does:**
+1. **Continuous residualization**: Regresses circadian CV on immune covariates (leukocyte fraction, lymphocyte infiltration, IFN-gamma response, purity, stromal fraction) via OLS, then correlates the residual CV with PD-L1
+2. **Purity stratification**: Splits tumors into purity tertiles and re-computes the CV-PD-L1 correlation within each stratum
+
+**Why it matters**: The primary critique of the "locked clock" finding is that it could reflect immune cell infiltration (T-cells expressing clock genes) rather than tumor-intrinsic restructuring. This analysis quantifies how much of the circadian CV variance is explained by immune infiltration, and whether the CV-PD-L1 coupling persists after removing those effects.
+
+**Key finding**: Immune covariates explain only 0.7-13.8% of circadian CV variance (R2). After removing immune effects, the CV-PD-L1 correlation remains significant in all four cohorts tested (SKCM, LUAD, BRCA, HNSC). The correlation also persists within all three purity tertiles for SKCM, LUAD, and BRCA.
+
+---
+
+#### 12. **composite_observability_index.py**
+**Type**: Independent metric validation (breaks tautology concern)
+**Runtime**: ~30 seconds
+**Inputs**: `tcga_expanded_tpm.csv`, `tcga_clinical.csv`
+**Outputs**:
+- `observability_index_results.csv` (AM/DC separation, survival, PD-L1 correlation)
+- `results/observability_index_survival.png` (KM curves: high vs low observability)
+
+**What it does:**
+1. Constructs a composite "observability index" from features **independent of the AM/DC classification rule**:
+   - MHC-I: mean log2(HLA-A, HLA-B, HLA-C) — NOT B2M (used in DC definition)
+   - Gap junctions: mean log2(GJA1, GJB2, GJA5, GJB6) — not used in AM/DC at all
+   - Orthogonal clock: CV of CLOCK, PER2, CRY1, CRY2 — NOT ARNTL or PER1 (used in AM definition)
+2. Z-scores each component within cohort and averages with equal weights
+3. Tests whether this index: (a) separates AM from DC, (b) predicts survival, (c) correlates with PD-L1
+
+**Why it matters**: If cancer = loss of distinction and therapy = restoration of distinction, the framework risks circularity unless distinction is independently operationalized. This index uses orthogonal features to show the boundary-failure concept captures real biology, not just definitional artifacts.
+
+**Key finding**: The index separates AM from DC with p = 1.7x10^-10 (SKCM) and p = 1.5x10^-20 (LUAD), and correlates with PD-L1 at rho = +0.48 (SKCM) and +0.54 (LUAD). Directional survival trend (p = 0.063 SKCM, p = 0.083 LUAD) — not FDR-significant but consistent, expected given weaker/orthogonal features.
+
+---
+
+#### 13. **run_external_validation.py**
+**Type**: External cohort replication (non-TCGA)
+**Runtime**: ~10 seconds (after data download)
+**Inputs**: Pre-downloaded GEO data in `geo_cache/` (see below)
+**Outputs**:
+- `external_validation_results.csv` (replication statistics)
+- `results/external_validation_geo.png` (3-panel: CV vs PD-L1, response by subtype, CV by response)
+
+**Data acquisition (prerequisite):**
+The script `external_validation_geo.py` downloads the raw data from GEO:
+```bash
+python external_validation_geo.py  # Downloads GSE91061 FPKM matrix + metadata
+python run_external_validation.py   # Runs the validation analysis
+```
+This creates `geo_cache/` containing:
+- `GSE91061_fpkm.csv.gz` (16 MB, FPKM expression matrix, 22,187 genes x 109 samples)
+- `GSE91061_family.xml` (sample metadata with response annotations)
+- `gse91061_target_expression.csv` (extracted 15 target genes x 109 samples)
+- `gse91061_sample_meta.csv` (patient/timepoint parsed from column names)
+
+**Note**: `geo_cache/` is `.gitignore`d. Raw GEO downloads must be regenerated by running `external_validation_geo.py`.
+
+**What it does:**
+1. Loads pre-treatment melanoma samples from GSE91061 (Riaz et al. 2017, nivolumab)
+2. Maps Entrez gene IDs to our target gene symbols (15/15 found)
+3. Computes circadian CV and tests correlation with PD-L1
+4. Classifies AM/DC using within-cohort medians
+5. Tests immunotherapy response rate by boundary-failure subtype (Fisher exact test)
+
+**Key finding**: The circadian CV-PD-L1 negative correlation replicates in this independent cohort (rho = -0.283, p = 0.049). This is the 7th cohort showing the same direction (7/7 negative). The AM-vs-DC response rate comparison (Fisher p = 1.0) is underpowered (n=10 AM) and non-significant, as expected for this sample size.
+
+---
+
 ### Utility Scripts (Discovery and Schema Inspection)
 
 These scripts were used during development to discover the BigQuery schema. **Not required for reproduction**, but included for transparency:
@@ -381,6 +495,11 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 | `robustness_primary_tests.csv` | varies | varies | Primary robustness tests with BH correction and PH-screen caution columns |
 | `robustness_ph_diagnostics.csv` | varies | varies | Proportional hazards interaction diagnostics (generated by `robustness_check.py`) |
 | `robustness_partial_correlations.csv` | varies | 7 | Optional partial-correlation sensitivity tests with available controls |
+| `threshold_sensitivity_results.csv` | 22 | 6 | Log-rank p-values for AM-vs-DC survival across 11 percentile thresholds (SKCM + LUAD) |
+| `rmst_results.csv` | 8 | 10 | RMST estimates and bootstrap 95% CIs at 4 time horizons (SKCM + LUAD) |
+| `immune_residualization_results.csv` | ~16 | 8 | Immune R2, residual correlations, and purity-tertile results for 4 cohorts |
+| `observability_index_results.csv` | 6 | 6 | Composite observability index: AM/DC separation, survival, PD-L1 correlation |
+| `external_validation_results.csv` | 1 | 11 | GSE91061 external validation: CV-PD-L1 replication and response analysis |
 
 ### Figures (PNG, 300 DPI)
 
@@ -397,6 +516,17 @@ You can ignore these unless you want to understand how the BigQuery schema was d
 | `survival_circadian_quartile.png` | KM curves | Survival stratified by circadian CV quartiles |
 | `survival_boundary_failure.png` | KM curves | Survival stratified by Active Masking vs Decoherence |
 | `stage_circadian_cv_boxplot.png` | Boxplot | Circadian CV by tumor stage (I/II/III/IV) |
+
+**Sensitivity analysis figures** (generated by scripts 9-13, written to `results/`):
+
+| File | Type | Description |
+|------|------|-------------|
+| `threshold_sensitivity_sweep.png` | Bar chart | -log10(p) across percentile thresholds for AM/DC survival |
+| `rmst_am_vs_dc.png` | Bar chart | RMST difference (AM-DC months) with bootstrap 95% CI |
+| `immune_residualization_scatter.png` | Scatter | Residual CV vs PD-L1 after immune-fraction removal |
+| `purity_stratified_correlations.png` | Scatter | CV vs PD-L1 within tumor-purity tertiles |
+| `observability_index_survival.png` | KM curves | Survival by independent observability index |
+| `external_validation_geo.png` | 3-panel | External validation: GSE91061 nivolumab melanoma |
 
 ## Key Statistical Methods
 
