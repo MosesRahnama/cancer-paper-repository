@@ -35,3 +35,6 @@ experiments/tcga/tcga_extract_manifest.json
 experiments/tcga/tcga_extract_expanded_manifest.json
 CHECKER_CHECKLIST.md
 CONSISTENCY_REPORT.md
+
+# Paper folder
+paper/
