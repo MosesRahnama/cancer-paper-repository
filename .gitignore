@@ -38,3 +38,9 @@ CONSISTENCY_REPORT.md
 
 # Paper folder
 paper/
+main-paper/feedback-claude-02-14-2026-1547.md
+main-paper/Cancer_As_Boundary_Logic_Failure.pdf
+main-paper/Cancer_As_Boundary_Logic_Failure.tex
+.gitignore
+main-paper/manuscript_split_instructions.md
+main-paper/tables/evidence_table_prespecified.tex
